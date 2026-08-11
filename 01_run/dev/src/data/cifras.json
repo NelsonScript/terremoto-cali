@@ -1,0 +1,55 @@
+{
+  "nacional": {
+    "fallecidos": 169,
+    "nota": "97,6% de la mortalidad concentrada en ciudades capitales",
+    "fuente": "Evaluación de Daños y Análisis de Necesidades (EDAN)",
+    "corte": "2026-08-11T00:00:00-05:00"
+  },
+  "zonas": [
+    {
+      "id": "cali",
+      "nombre": "Cali (Valle del Cauca)",
+      "fallecidos": 95,
+      "heridos": 949,
+      "desaparecidos": 239,
+      "rescatados": 86,
+      "edificaciones_colapsadas": "45–56",
+      "fuente": "Alcaldía de Cali — Repositorio Oficial de Información",
+      "corte": "2026-08-11T00:00:00-05:00"
+    },
+    {
+      "id": "choco",
+      "nombre": "Chocó (Quibdó)",
+      "fallecidos": null,
+      "heridos": null,
+      "desaparecidos": null,
+      "rescatados": null,
+      "edificaciones_colapsadas": null,
+      "nota": "Zona epicentral. Aeropuerto El Caraño inoperativo, ruptura de conectividad logística.",
+      "fuente": "Evaluación Multisectorial de Necesidades Humanitarias",
+      "corte": "2026-08-11T00:00:00-05:00"
+    },
+    {
+      "id": "pereira",
+      "nombre": "Pereira (Risaralda)",
+      "fallecidos": 66,
+      "heridos": null,
+      "desaparecidos": null,
+      "rescatados": null,
+      "edificaciones_colapsadas": "66",
+      "fuente": "Evaluación Multisectorial de Necesidades Humanitarias",
+      "corte": "2026-08-11T00:00:00-05:00"
+    },
+    {
+      "id": "manizales",
+      "nombre": "Manizales (Caldas)",
+      "fallecidos": 5,
+      "heridos": null,
+      "desaparecidos": null,
+      "rescatados": null,
+      "edificaciones_colapsadas": null,
+      "fuente": "Evaluación Multisectorial de Necesidades Humanitarias",
+      "corte": "2026-08-11T00:00:00-05:00"
+    }
+  ]
+}

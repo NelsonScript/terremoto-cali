@@ -1,0 +1,30 @@
+{
+  "resumen_por_ciudad": [
+    { "ciudad": "Cali", "dano_grave_evacuadas": 11, "en_evaluacion_saturadas": 25, "total": 36 },
+    { "ciudad": "Pereira / Risaralda", "dano_grave_evacuadas": 3, "en_evaluacion_saturadas": 2, "total": 5 },
+    { "ciudad": "Manizales", "dano_grave_evacuadas": 1, "en_evaluacion_saturadas": 1, "total": 2 }
+  ],
+  "instituciones": [
+    { "nombre": "Hospital Universitario del Valle (HUV)", "ciudad": "Cali", "estado": "Daño grave", "detalle": "Colapso parcial de un ala; atención en carpas habilitadas en los jardines." },
+    { "nombre": "Clínica Nuestra Cali", "ciudad": "Cali", "estado": "Evacuada", "detalle": "Cerrada de emergencia." },
+    { "nombre": "Clínica DESSA", "ciudad": "Cali", "estado": "Evacuada", "detalle": "Cerrada de emergencia." },
+    { "nombre": "Clínica Colombia", "ciudad": "Cali", "estado": "Evacuada", "detalle": "Cerrada de emergencia." },
+    { "nombre": "Clínica Alba", "ciudad": "Cali", "estado": "En evaluación", "detalle": "Plan de evaluación o traslado de pacientes críticos." },
+    { "nombre": "Clínica Rey David", "ciudad": "Cali", "estado": "En evaluación", "detalle": "Plan de evaluación o traslado de pacientes críticos." },
+    { "nombre": "Clínica Sanitas Tequendama", "ciudad": "Cali", "estado": "En evaluación", "detalle": "Plan de evaluación o traslado de pacientes críticos." },
+    { "nombre": "Clínica Cali", "ciudad": "Cali", "estado": "En evaluación", "detalle": "Plan de evaluación o traslado de pacientes críticos." },
+    { "nombre": "Hospital Carlos Holmes Trujillo", "ciudad": "Cali", "estado": "En evaluación", "detalle": "Requiere evaluación técnica." },
+    { "nombre": "Urgencias Pasoancho", "ciudad": "Cali", "estado": "En evaluación", "detalle": "Requiere evaluación técnica." },
+    { "nombre": "Hospital Universitario San Jorge", "ciudad": "Pereira", "estado": "Saturado (100%)", "detalle": "Apertura de zonas de expansión temporal." },
+    { "nombre": "Hospital San Pedro y San Pablo (La Virginia)", "ciudad": "Pereira", "estado": "Saturado (100%)", "detalle": "Requerimiento urgente de refuerzo médico nacional." },
+    { "nombre": "Clínica Los Nevados", "ciudad": "Pereira", "estado": "Afectación media", "detalle": "Colapso de pared perimetral; monitoreo estructural." },
+    { "nombre": "Hospital Belén de Umbría", "ciudad": "Pereira", "estado": "Afectación técnica", "detalle": "Daños en infraestructura de múltiples áreas." },
+    { "nombre": "Clínica Noé", "ciudad": "Pereira", "estado": "Inoperativa", "detalle": "Evacuación total por daños estructurales graves." },
+    { "nombre": "Hospital Santa Sofía", "ciudad": "Manizales", "estado": "Afectación estructural", "detalle": "Capacidad de respuesta inmediata limitada." }
+  ],
+  "necesidades_urgentes": [
+    { "zona": "Chocó / Quibdó", "necesidad": "Donación de sangre y componentes sanguíneos", "responsable": "IDCBIS" }
+  ],
+  "fuente": "Secretaría de Salud Pública de Cali, comités locales de gestión del riesgo, red nacional gremial de salud, Asocapitales (Reporte Técnico de Situación No. 4)",
+  "corte": "2026-08-11T00:00:00-05:00"
+}

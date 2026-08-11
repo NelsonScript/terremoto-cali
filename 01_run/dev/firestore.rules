@@ -1,0 +1,26 @@
+rules_version = '2';
+
+// Reglas de seguridad para el proyecto "Ayuda Cali".
+// Los formularios públicos (Reportar y Voluntariado) solo pueden CREAR
+// documentos; nadie puede leer, actualizar ni borrar desde el cliente.
+// El equipo coordinador consulta los datos desde la consola de Firebase
+// (autenticado como administrador del proyecto), fuera del alcance de
+// estas reglas de cliente.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /reportes/{docId} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+
+    match /voluntariado/{docId} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

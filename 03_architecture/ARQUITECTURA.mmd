@@ -1,0 +1,61 @@
+
+flowchart TB
+    subgraph COLAB["👥 Colaboradores"]
+        VOL["Voluntarios / equipo\neditorial (no-dev)"]
+        DEV["Desarrolladores"]
+    end
+
+    subgraph GH["🐙 GitHub (gratis)"]
+        REPO["Repositorio\nterremoto-cali\n(Next.js + data/*.json)"]
+        PR["Pull Request\n(cambio de datos o código)"]
+        ACTIONS_CI["GitHub Actions — CI\nlint + build + preview"]
+        ACTIONS_CD["GitHub Actions — CD\nbuild export estático\n+ deploy en merge a main"]
+    end
+
+    subgraph FB["🔥 Firebase (plan Spark, gratis)"]
+        HOST["Firebase Hosting\n(sitio estático Next.js\n'output: export')"]
+        PREVIEW["Hosting Preview Channels\n(1 URL temporal por PR)"]
+        FS["Cloud Firestore\n(reportes y voluntariado)"]
+        RULES["Security Rules\n(solo 'create', sin lectura pública)"]
+    end
+
+    subgraph CF["☁️ Cloudflare (plan Free)"]
+        DNS["DNS autoritativo"]
+        CDN["CDN + caché de borde"]
+        WAF["WAF básico / Rate limiting\n+ protección DDoS"]
+        ANALYTICS["Cloudflare Web Analytics\n(sin cookies, gratis)"]
+    end
+
+    subgraph USERS["🌍 Usuarios finales"]
+        CIUDADANO["Ciudadano / familiar\n(conexión móvil, a veces lenta)"]
+        DONANTE["Donante / empresa"]
+        VOLUNT["Voluntario"]
+        COORD["Equipo coordinador\n(consulta Firestore\nvía consola Firebase)"]
+    end
+
+    DEV -->|commit / PR| REPO
+    VOL -->|edita data/*.json\nvía PR asistido| REPO
+    REPO --> PR --> ACTIONS_CI
+    ACTIONS_CI -->|deploy temporal| PREVIEW
+    PR -->|merge a main| ACTIONS_CD
+    ACTIONS_CD -->|firebase deploy| HOST
+
+    CIUDADANO -->|HTTPS| DNS
+    DONANTE -->|HTTPS| DNS
+    VOLUNT -->|HTTPS| DNS
+    DNS --> CDN --> WAF --> HOST
+    CDN --> ANALYTICS
+
+    HOST -.->|assets cacheados| CDN
+
+    CIUDADANO -->|envía formulario\nReportar / Voluntariado| FS
+    VOLUNT -->|envía formulario| FS
+    FS --- RULES
+    COORD -->|revisa reportes| FS
+
+    classDef free fill:#e6f4ea,stroke:#34a853,color:#1a1a1a;
+    classDef infra fill:#e8f0fe,stroke:#4285f4,color:#1a1a1a;
+    classDef user fill:#fef7e0,stroke:#f9ab00,color:#1a1a1a;
+    class GH,FB,CF free
+    class REPO,PR,ACTIONS_CI,ACTIONS_CD,HOST,PREVIEW,FS,RULES,DNS,CDN,WAF,ANALYTICS infra
+    class CIUDADANO,DONANTE,VOLUNT,COORD user
