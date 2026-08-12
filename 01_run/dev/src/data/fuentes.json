@@ -1,7 +1,8 @@
 [
+  { "nombre": "Evaluación Multisectorial de Necesidades Humanitarias", "descripcion": "Diagnóstico por departamento y municipio (Valle del Cauca, Risaralda, Chocó, Caldas), corte 11 de agosto de 2026." },
+  { "nombre": "UNGRD — Consejos Departamentales de Gestión del Riesgo", "descripcion": "Consolidado técnico de daños por departamento (fallecidos, heridos, vivienda), incluyendo zonas rurales fuera de las capitales." },
+  { "nombre": "Asocapitales", "descripcion": "Cifras confirmadas de fallecidos en centros urbanos (capitales)." },
   { "nombre": "Alcaldía de Cali — Repositorio Oficial de Información", "descripcion": "Balance oficial de víctimas, rescates y medidas de la administración distrital." },
-  { "nombre": "Asocapitales — Reporte Técnico de Situación No. 4", "descripcion": "Consolidado técnico de impacto hospitalario, corte 11 de agosto de 2026." },
   { "nombre": "Secretaría de Salud Pública Distrital de Cali", "descripcion": "Estado de la red hospitalaria y Alerta Roja." },
-  { "nombre": "Evaluación de Daños y Análisis de Necesidades (EDAN) — Gobierno Nacional", "descripcion": "Consolidado nacional de la situación de desastre." },
-  { "nombre": "Cruz Roja Colombiana", "descripcion": "Canal oficial para donaciones económicas y restablecimiento de contacto familiar." }
+  { "nombre": "Cruz Roja Colombiana", "descripcion": "Canal oficial para donaciones económicas, Protección de Vínculos Familiares (PVF) y centros de acopio." }
 ]

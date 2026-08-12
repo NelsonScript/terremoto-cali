@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useCrisisForm } from "@/lib/useCrisisForm";
-import { zonas } from "@/lib/data";
+import { departamentos } from "@/lib/data";
 
 const PERFILES = [
   "Médico / salud",
@@ -16,14 +16,14 @@ const PERFILES = [
 export default function VoluntariadoPage() {
   const { status, errorMsg, submit, isFirebaseConfigured } = useCrisisForm("voluntariado");
   const [perfil, setPerfil] = useState(PERFILES[0]);
-  const [zona, setZona] = useState(zonas[0]?.id ?? "");
+  const [departamento, setDepartamento] = useState(departamentos[0]?.id ?? "");
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     submit({
       perfil,
-      zona,
+      departamento,
       disponibilidad: form.get("disponibilidad"),
       contacto: form.get("contacto"),
       nombre: form.get("nombre"),
@@ -70,14 +70,14 @@ export default function VoluntariadoPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="zona">Zona donde puedes ayudar</label>
+            <label className="block text-sm font-medium mb-1" htmlFor="departamento">Departamento donde puedes ayudar</label>
             <select
-              id="zona"
-              value={zona}
-              onChange={(e) => setZona(e.target.value)}
+              id="departamento"
+              value={departamento}
+              onChange={(e) => setDepartamento(e.target.value)}
               className="w-full rounded-md border border-slate-300 px-3 py-2"
             >
-              {zonas.map((z) => <option key={z.id} value={z.id}>{z.nombre}</option>)}
+              {departamentos.map((d) => <option key={d.id} value={d.id}>{d.nombre}</option>)}
             </select>
           </div>
 

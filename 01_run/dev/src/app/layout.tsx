@@ -6,11 +6,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Ayuda Cali — Respuesta al terremoto del 10 de agosto de 2026",
-    template: "%s · Ayuda Cali",
+    default: "Ayuda Suroccidente — Respuesta al terremoto del 10 de agosto de 2026",
+    template: "%s · Ayuda Suroccidente",
   },
   description:
-    "Información verificada y herramientas de acción para la emergencia por el sismo del 10 de agosto de 2026 en Cali, Chocó, Pereira y Manizales: dónde donar, albergues, líneas de emergencia y cómo reportar.",
+    "Información verificada y herramientas de acción para la emergencia por el sismo del 10 de agosto de 2026 en el suroccidente colombiano (Valle del Cauca, Risaralda, Chocó, Caldas y departamentos vecinos): dónde donar, albergues, líneas de emergencia y cómo reportar.",
 };
 
 export const viewport: Viewport = {

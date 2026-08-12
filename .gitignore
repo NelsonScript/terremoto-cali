@@ -3,9 +3,14 @@
 .DS_Store
 .AppleDouble
 .LSOverride
-._*
 .Spotlight-V100
 .Trashes
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+build/
 
 # Python
 __pycache__/

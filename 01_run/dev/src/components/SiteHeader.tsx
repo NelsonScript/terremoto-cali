@@ -3,7 +3,7 @@ import { meta } from "@/lib/data";
 import { formatFecha } from "@/lib/data";
 
 const NAV_LINKS = [
-  { href: "/zonas", label: "Zonas" },
+  { href: "/departamentos", label: "Departamentos" },
   { href: "/salud", label: "Salud" },
   { href: "/albergues", label: "Albergues" },
   { href: "/donar", label: "Donar" },
@@ -22,7 +22,7 @@ export default function SiteHeader() {
       </div>
       <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
         <Link href="/" className="font-bold text-lg text-slate-900 shrink-0">
-          Ayuda Cali <span className="text-red-600">·</span> Respuesta Terremoto
+          Ayuda Suroccidente <span className="text-red-600">·</span> Respuesta Terremoto
         </Link>
         <nav className="hidden md:flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-700 justify-end">
           {NAV_LINKS.map((link) => (

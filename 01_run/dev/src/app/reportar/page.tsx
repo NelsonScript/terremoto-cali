@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import EmergencyFormNotice from "@/components/EmergencyFormNotice";
 import { useCrisisForm } from "@/lib/useCrisisForm";
-import { zonas } from "@/lib/data";
+import { departamentos } from "@/lib/data";
 
 const TIPOS = [
   "Persona atrapada / desaparecida",
@@ -15,14 +15,15 @@ const TIPOS = [
 export default function ReportarPage() {
   const { status, errorMsg, submit, isFirebaseConfigured } = useCrisisForm("reportes");
   const [tipo, setTipo] = useState(TIPOS[0]);
-  const [zona, setZona] = useState(zonas[0]?.id ?? "");
+  const [departamento, setDepartamento] = useState(departamentos[0]?.id ?? "");
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     submit({
       tipo,
-      zona,
+      departamento,
+      municipio: form.get("municipio"),
       descripcion: form.get("descripcion"),
       ubicacion: form.get("ubicacion"),
       contacto: form.get("contacto"),
@@ -60,15 +61,26 @@ export default function ReportarPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="zona">Zona</label>
+            <label className="block text-sm font-medium mb-1" htmlFor="departamento">Departamento</label>
             <select
-              id="zona"
-              value={zona}
-              onChange={(e) => setZona(e.target.value)}
+              id="departamento"
+              value={departamento}
+              onChange={(e) => setDepartamento(e.target.value)}
               className="w-full rounded-md border border-slate-300 px-3 py-2"
             >
-              {zonas.map((z) => <option key={z.id} value={z.id}>{z.nombre}</option>)}
+              {departamentos.map((d) => <option key={d.id} value={d.id}>{d.nombre}</option>)}
             </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1" htmlFor="municipio">Municipio</label>
+            <input
+              id="municipio"
+              name="municipio"
+              type="text"
+              placeholder="Ej: Cali, Quibdó, Dosquebradas…"
+              className="w-full rounded-md border border-slate-300 px-3 py-2"
+            />
           </div>
 
           <div>

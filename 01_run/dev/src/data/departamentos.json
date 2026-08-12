@@ -1,0 +1,261 @@
+[
+  {
+    "id": "valle-del-cauca",
+    "nombre": "Valle del Cauca",
+    "capital": "Santiago de Cali",
+    "prioridad": true,
+    "resumen": "El escenario más crítico de mortalidad urbana. Rescate activo en Cali, corredor Cali-Loboguerrero cerrado y saturación forense.",
+    "cifras_capital": {
+      "nombre": "Cali",
+      "fallecidos": 95,
+      "heridos": 949,
+      "desaparecidos": 180,
+      "atrapados": 239,
+      "rescatados": 86,
+      "estructuras_colapsadas": 45,
+      "edificios_dano_estructural": 93,
+      "ips_inhabilitadas": 7,
+      "fuente": "Alcaldía de Cali / Evaluación Multisectorial de Necesidades Humanitarias",
+      "corte": "2026-08-11T00:00:00-05:00"
+    },
+    "cifras_departamento_ungrd": {
+      "fallecidos": 70,
+      "heridos": 1648,
+      "viviendas_averiadas": 1073,
+      "viviendas_destruidas": 256,
+      "edificios_colapsados": 44,
+      "fuente": "UNGRD — Consejos Departamentales de Gestión del Riesgo",
+      "corte": "2026-08-11T00:00:00-05:00",
+      "nota_ambiguedad": "La Evaluación Multisectorial describe estas cifras como \"adicionales\" a Cali, pero el resumen del mismo informe usa el mismo 1.648 como el 63% de los heridos nacionales (2.595) — matemáticamente eso ya incluiría a Cali. Se muestran ambos bloques por separado, sin sumarlos, hasta que la fuente lo aclare."
+    },
+    "situacion": [
+      "Censo diferenciado en curso en la Comuna 1 para residentes, población migrante y víctimas del conflicto, buscando evitar exclusión en la entrega de ayuda.",
+      "Operaciones USAR activas en Sector Capri y Torres del Limonar tras colapsos masivos.",
+      "Plazoleta Jairo Varela como nodo logístico primario de la ciudad.",
+      "Cierre total del corredor vial Cali-Loboguerrero (Dagua) por desplazamiento de masa, bloqueando el suministro estratégico desde el puerto.",
+      "Hospital Universitario del Valle (HUV): atención desplazada a carpas externas bajo protocolos de seguridad estructural.",
+      "Saturación forense crítica: Medicina Legal trasladó operaciones a Palmira y Medellín.",
+      "22 pacientes críticos evacuados y reubicados desde IPS inhabilitadas."
+    ],
+    "municipios": [
+      { "nombre": "Cali", "nota": "Capital del departamento. Ver cifras detalladas arriba." },
+      { "nombre": "Zarzal", "nota": "2 fallecidos confirmados." },
+      { "nombre": "El Cairo", "nota": "3 heridos reportados." },
+      { "nombre": "Calima-El Darién", "nota": "Colapso total de infraestructura académica; compromete la continuidad educativa." }
+    ],
+    "necesidades": [
+      "Agua potable",
+      "Cascos de seguridad",
+      "Gafas técnicas de protección",
+      "Picas",
+      "Guantes de carnaza"
+    ],
+    "puntos_acopio": ["Plazoleta Jairo Varela (frente al CAM, Cali)"],
+    "albergues": ["Cancha de Hockey Miguel Calero", "Diamante de Béisbol", "Escuela Nacional del Deporte"]
+  },
+  {
+    "id": "risaralda",
+    "nombre": "Risaralda",
+    "capital": "Pereira",
+    "prioridad": true,
+    "resumen": "Colapso sanitario absoluto: red hospitalaria saturada, aeropuerto Matecaña fuera de servicio y municipios con riesgo de desabastecimiento.",
+    "cifras_capital": {
+      "nombre": "Pereira",
+      "fallecidos": 66,
+      "heridos": 278,
+      "edificios_colapsados": 66,
+      "fuente": "Evaluación Multisectorial de Necesidades Humanitarias",
+      "corte": "2026-08-11T00:00:00-05:00",
+      "nota": "Incluye 3 víctimas mortales por el desprendimiento de la cubierta del Aeropuerto Matecaña, ahora fuera de servicio."
+    },
+    "cifras_departamento_ungrd": {
+      "fallecidos": 90,
+      "heridos": 224,
+      "viviendas_averiadas": 40,
+      "viviendas_destruidas": 0,
+      "edificios_colapsados": 0,
+      "fuente": "UNGRD — Consejos Departamentales de Gestión del Riesgo",
+      "corte": "2026-08-11T00:00:00-05:00",
+      "nota_ambiguedad": "El total departamental de heridos de UNGRD (224) es menor a los 278 heridos reportados solo en Pereira. Se muestran ambas cifras tal como las reportan sus fuentes respectivas, sin intentar reconciliarlas."
+    },
+    "situacion": [
+      "Dosquebradas: colapsos múltiples en zonas residenciales, equipos USAR desplegados.",
+      "Belén de Umbría: daños críticos en la infraestructura hospitalaria local.",
+      "Marsella: riesgo inminente de desabastecimiento de agua por afectación en la bocatoma del acueducto.",
+      "La Virginia: daños transversales en servicios públicos y viviendas.",
+      "Hospital San Jorge y Hospital de La Virginia con ocupación total, requieren refuerzo médico nacional.",
+      "Clínicas Los Nevados y Noé evacuadas por compromiso estructural.",
+      "Colapso extendido de redes de energía y telefonía.",
+      "Programa de Protección de Vínculos Familiares (PVF) de la Cruz Roja activado por el volumen de desapariciones."
+    ],
+    "municipios": [
+      { "nombre": "Pereira", "nota": "Capital del departamento. Ver cifras detalladas arriba." },
+      { "nombre": "Dosquebradas", "nota": "Colapsos múltiples en zonas residenciales; equipos USAR en despliegue." },
+      { "nombre": "Belén de Umbría", "nota": "Daños críticos en la infraestructura hospitalaria local." },
+      { "nombre": "Marsella", "nota": "Riesgo inminente de desabastecimiento de agua." },
+      { "nombre": "La Virginia", "nota": "Daños transversales en servicios públicos y viviendas." }
+    ],
+    "necesidades": [
+      "Refuerzo de personal médico nacional",
+      "Zonas de expansión hospitalaria",
+      "Apoyo en restablecimiento de contacto familiar (PVF)"
+    ],
+    "puntos_acopio": [],
+    "albergues": []
+  },
+  {
+    "id": "choco",
+    "nombre": "Chocó",
+    "capital": "Quibdó",
+    "prioridad": true,
+    "resumen": "Zona epicentral con aislamiento casi total en municipios rurales; prioridad en abastecimiento de sangre y kits de higiene.",
+    "cifras_capital": {
+      "nombre": "Quibdó",
+      "fallecidos": 9,
+      "heridos": 119,
+      "desaparecidos": 5,
+      "viviendas_colapsadas": 23,
+      "viviendas_averiadas": 862,
+      "fuente": "Evaluación Multisectorial de Necesidades Humanitarias",
+      "corte": "2026-08-11T00:00:00-05:00",
+      "nota": "Incluye menores fallecidos en centros educativos."
+    },
+    "cifras_departamento_ungrd": {
+      "fallecidos": 14,
+      "heridos": 131,
+      "viviendas_averiadas": 1832,
+      "viviendas_destruidas": 715,
+      "edificios_colapsados": 0,
+      "fuente": "UNGRD — Consejos Departamentales de Gestión del Riesgo",
+      "corte": "2026-08-11T00:00:00-05:00"
+    },
+    "situacion": [
+      "San José del Palmar (epicentro del sismo), Río Iró y Nóvita: aislamiento casi total por falta de fluido eléctrico y comunicaciones.",
+      "La evaluación EDAN completa no ha sido posible en la zona epicentral; se sospecha subregistro de víctimas en comunidades indígenas y afrodescendientes.",
+      "Aeropuerto El Caraño con operaciones suspendidas, aislando la logística de gran escala.",
+      "Universidad Tecnológica del Chocó con daños estructurales graves (hundimiento de escaleras)."
+    ],
+    "municipios": [
+      { "nombre": "Quibdó", "nota": "Capital del departamento. Ver cifras detalladas arriba." },
+      { "nombre": "San José del Palmar", "nota": "Epicentro del sismo. Aislamiento casi total, sin evaluación EDAN completa." },
+      { "nombre": "Río Iró", "nota": "Aislamiento casi total por falta de fluido eléctrico y comunicaciones." },
+      { "nombre": "Nóvita", "nota": "Aislamiento casi total por falta de fluido eléctrico y comunicaciones." },
+      { "nombre": "Bahía Solano", "nota": "Entre los municipios con víctimas mortales reportadas." }
+    ],
+    "necesidades": [
+      "Donación de sangre y componentes sanguíneos (urgente, vía IDCBIS)",
+      "Material de sutura y líquidos endovenosos",
+      "Kits de higiene para mujeres gestantes",
+      "Nutrición especializada para menores de 5 años"
+    ],
+    "puntos_acopio": [],
+    "albergues": []
+  },
+  {
+    "id": "caldas",
+    "nombre": "Caldas",
+    "capital": "Manizales",
+    "prioridad": true,
+    "resumen": "Ruptura de la cadena de suministro de medicamentos; daños en infraestructura educativa y cultural emblemática.",
+    "cifras_capital": {
+      "nombre": "Manizales",
+      "fallecidos": 5,
+      "heridos": 78,
+      "damnificados": 2000,
+      "fuente": "Evaluación Multisectorial de Necesidades Humanitarias",
+      "corte": "2026-08-11T00:00:00-05:00"
+    },
+    "cifras_departamento_ungrd": {
+      "fallecidos": 6,
+      "heridos": 274,
+      "viviendas_averiadas": 1959,
+      "viviendas_destruidas": 156,
+      "edificios_colapsados": 4,
+      "centros_asistenciales_afectados": 15,
+      "fuente": "UNGRD — Consejos Departamentales de Gestión del Riesgo",
+      "corte": "2026-08-11T00:00:00-05:00"
+    },
+    "situacion": [
+      "Daños de consideración en la Catedral Basílica Metropolitana, la sede de la Universidad Nacional y el Aeropuerto La Nubia.",
+      "La red de distribución Disfarma sufrió una interrupción que compromete la farmacología de emergencia y el manejo de enfermedades crónicas.",
+      "Riesgo de aumento de mortalidad indirecta en las siguientes 72 horas por el desabastecimiento de medicamentos.",
+      "15 centros asistenciales de salud afectados en el departamento."
+    ],
+    "municipios": [
+      { "nombre": "Manizales", "nota": "Capital del departamento. Ver cifras detalladas arriba." }
+    ],
+    "necesidades": [
+      "Medicamentos esenciales (reabastecimiento urgente)",
+      "Evaluación estructural de edificios públicos"
+    ],
+    "puntos_acopio": [],
+    "albergues": [],
+    "nota_cobertura": "Sin desglose de otros municipios disponible aún más allá de la capital."
+  },
+  {
+    "id": "quindio",
+    "nombre": "Quindío",
+    "capital": "Armenia",
+    "prioridad": false,
+    "resumen": "Mayor afectación superficial de vivienda del país, sin pérdidas de vidas en los reportes preliminares.",
+    "cifras_departamento_ungrd": {
+      "fallecidos": 0,
+      "heridos": 306,
+      "viviendas_averiadas": 2144,
+      "viviendas_destruidas": 3,
+      "edificios_colapsados": 0,
+      "fuente": "UNGRD — Consejos Departamentales de Gestión del Riesgo",
+      "corte": "2026-08-11T00:00:00-05:00"
+    },
+    "situacion": [],
+    "municipios": [],
+    "necesidades": [],
+    "puntos_acopio": [],
+    "albergues": [],
+    "nota_cobertura": "Sin diagnóstico detallado por municipio disponible aún; solo cifras agregadas de UNGRD."
+  },
+  {
+    "id": "antioquia",
+    "nombre": "Antioquia",
+    "capital": "Medellín",
+    "prioridad": false,
+    "resumen": "Afectación menor reportada hasta el momento, principalmente en viviendas averiadas.",
+    "cifras_departamento_ungrd": {
+      "fallecidos": 1,
+      "heridos": 0,
+      "viviendas_averiadas": 857,
+      "viviendas_destruidas": 0,
+      "edificios_colapsados": 0,
+      "fuente": "UNGRD — Consejos Departamentales de Gestión del Riesgo",
+      "corte": "2026-08-11T00:00:00-05:00"
+    },
+    "situacion": [],
+    "municipios": [],
+    "necesidades": [],
+    "puntos_acopio": [],
+    "albergues": [],
+    "nota_cobertura": "Sin diagnóstico detallado por municipio disponible aún; solo cifras agregadas de UNGRD."
+  },
+  {
+    "id": "tolima",
+    "nombre": "Tolima",
+    "capital": "Ibagué",
+    "prioridad": false,
+    "resumen": "Afectación menor reportada hasta el momento, sin víctimas mortales ni heridos registrados.",
+    "cifras_departamento_ungrd": {
+      "fallecidos": 0,
+      "heridos": 0,
+      "viviendas_averiadas": 234,
+      "viviendas_destruidas": 6,
+      "edificios_colapsados": 0,
+      "fuente": "UNGRD — Consejos Departamentales de Gestión del Riesgo",
+      "corte": "2026-08-11T00:00:00-05:00"
+    },
+    "situacion": [],
+    "municipios": [],
+    "necesidades": [],
+    "puntos_acopio": [],
+    "albergues": [],
+    "nota_cobertura": "Sin diagnóstico detallado por municipio disponible aún; solo cifras agregadas de UNGRD."
+  }
+]

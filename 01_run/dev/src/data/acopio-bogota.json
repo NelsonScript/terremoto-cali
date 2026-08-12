@@ -1,0 +1,12 @@
+{
+  "horario_general": "8:00 a. m. a 9:00 p. m.",
+  "horario_sede_administrativa": "24 horas",
+  "puntos": [
+    { "nombre": "Universidad Jorge Tadeo Lozano", "direccion": "Carrera 4 # 22-61" },
+    { "nombre": "Usaquén", "direccion": "Calle 161A # 7F-55" },
+    { "nombre": "Unicentro", "direccion": "Carrera 15 # 124-30" },
+    { "nombre": "Sede Administrativa Cruz Roja Colombiana", "direccion": "Carrera 24 # 73-38", "nota": "Atención 24 horas" }
+  ],
+  "fuente": "Cruz Roja Colombiana, vía Evaluación Multisectorial de Necesidades Humanitarias",
+  "corte": "2026-08-11T00:00:00-05:00"
+}

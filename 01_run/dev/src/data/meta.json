@@ -2,7 +2,30 @@
   "evento": "Sismo 7,4 Mw — 10 de agosto de 2026",
   "epicentro": "San José del Palmar, Chocó",
   "profundidad_km": 103,
-  "declaratoria": "Situación de desastre nacional",
-  "ultima_actualizacion": "2026-08-11T12:00:00-05:00",
-  "fuente_principal": "Alcaldía de Cali — Repositorio Oficial de Información / Asocapitales, Reporte Técnico de Situación No. 4"
+  "hora_evento": "07:34 a. m.",
+  "declaratoria": "Desastre Nacional",
+  "region": "Eje suroccidental de Colombia",
+  "ultima_actualizacion": "2026-08-11T21:30:00-05:00",
+  "fuente_principal": "Evaluación Multisectorial de Necesidades Humanitarias / UNGRD (afectación departamental), corte 11 de agosto de 2026",
+  "nacional": {
+    "fallecidos_confirmados_urbano": {
+      "valor": 181,
+      "etiqueta": "Fallecidos confirmados en centros urbanos",
+      "fuente": "Asocapitales",
+      "corte": "2026-08-11T00:00:00-05:00"
+    },
+    "fallecidos_gobernaciones": {
+      "valor": 224,
+      "etiqueta": "Fallecidos según gobernaciones (preliminar, en aumento)",
+      "nota": "Cifra preliminar de las gobernaciones/UNGRD que incluye zonas rurales aún sin evaluación EDAN completa. Tiende a seguir subiendo a medida que avanza la evaluación en zonas aisladas.",
+      "fuente": "UNGRD",
+      "corte": "2026-08-11T00:00:00-05:00"
+    },
+    "heridos": {
+      "valor": 2595,
+      "etiqueta": "Heridos a nivel nacional",
+      "fuente": "Evaluación Multisectorial de Necesidades Humanitarias",
+      "corte": "2026-08-11T00:00:00-05:00"
+    }
+  }
 }

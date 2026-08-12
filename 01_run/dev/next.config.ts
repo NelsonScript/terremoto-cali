@@ -5,9 +5,10 @@ const nextConfig: NextConfig = {
   // Ver 03_architecture/ARQUITECTURA.md
   output: "export",
   trailingSlash: true,
+  experimental: {
+    turbopackFileSystemCacheForDev: false,
+  },
   images: {
-    // next/image con loader por defecto no funciona en export estático.
-    // Se sirven imágenes optimizadas manualmente (WebP livianos) vía CDN de Cloudflare.
     unoptimized: true,
   },
 };

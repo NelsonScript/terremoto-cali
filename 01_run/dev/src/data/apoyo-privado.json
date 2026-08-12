@@ -1,9 +1,14 @@
 [
-  { "organizacion": "Starlink (Elon Musk)", "aporte": "Internet satelital gratuito por un mes en zonas de desastre" },
-  { "organizacion": "FC Barcelona", "aporte": "Donación de 100.000 euros y activación de colecta internacional" },
-  { "organizacion": "Tiendas Ara", "aporte": "39 toneladas de alimentos y kits de aseo" },
-  { "organizacion": "Grupo Éxito", "aporte": "3.500 ayudas humanitarias de distribución inmediata" },
-  { "organizacion": "Fundación Olímpica", "aporte": "5.000 mercados para familias damnificadas en albergues" },
-  { "organizacion": "Nutresa / Grupo Gilinski", "aporte": "Soporte logístico regional y articulación de raciones alimentarias; apoyo a la reconstrucción de Cali" },
-  { "organizacion": "Alcaldía de Bogotá", "aporte": "Despliegue de 100 rescatistas y 4 puntos de acopio (Unicentro, U. Tadeo Lozano, entre otros)" }
+  { "organizacion": "Gobierno de Estados Unidos", "aporte": "USD 15,5 millones destinados a la respuesta inicial", "tipo": "Cooperación internacional" },
+  { "organizacion": "El Salvador", "aporte": "Envío de 100 toneladas de suministros humanitarios", "tipo": "Cooperación internacional" },
+  { "organizacion": "Starlink (Elon Musk)", "aporte": "Internet satelital gratuito en las zonas de desastre para facilitar la coordinación entre organismos de socorro", "tipo": "Sector privado" },
+  { "organizacion": "FC Barcelona (Fundación)", "aporte": "Donación inicial de 100.000 euros y activación de colecta internacional", "tipo": "Sector privado" },
+  { "organizacion": "Grupo Gilinski", "aporte": "Fondos para la reconstrucción; soporte logístico regional", "tipo": "Sector privado" },
+  { "organizacion": "Nutresa", "aporte": "Fondos para la reconstrucción; articulación de raciones alimentarias", "tipo": "Sector privado" },
+  { "organizacion": "Fundación Santo Domingo", "aporte": "Fondos para la reconstrucción", "tipo": "Sector privado" },
+  { "organizacion": "Fundación Éxito", "aporte": "Fondos para la reconstrucción", "tipo": "Sector privado" },
+  { "organizacion": "Grupo Éxito", "aporte": "3.500 ayudas humanitarias de distribución inmediata", "tipo": "Sector privado" },
+  { "organizacion": "Tiendas Ara", "aporte": "39 toneladas de alimentos y kits de aseo", "tipo": "Sector privado" },
+  { "organizacion": "Olímpica / Fundación Olímpica", "aporte": "5.000 mercados para familias damnificadas en albergues", "tipo": "Sector privado" },
+  { "organizacion": "Alcaldía de Bogotá", "aporte": "Despliegue de 100 rescatistas y 4 puntos de acopio en la ciudad", "tipo": "Cooperación interinstitucional" }
 ]
