@@ -4,39 +4,61 @@ export const metadata: Metadata = {
   title: "Trámites e indemnizaciones",
 };
 
+const CUBRE = [
+  "Gastos médicos y quirúrgicos: cirugías, hospitalización y rehabilitación.",
+  "Gastos funerarios: indemnización para familias de víctimas mortales.",
+  "Indemnización por incapacidad permanente, previa certificación técnica.",
+  "Traslado de pacientes: reconocimiento de costos de transporte asistencial.",
+];
+const NO_CUBRE = ["Daños en vivienda", "Pérdida de bienes", "Lucro cesante"];
+const PASOS = [
+  { titulo: "1. Reúne los documentos", detalle: "Documento de identidad, historia clínica o certificado de atención, y factura de los servicios." },
+  { titulo: "2. Radica ante la IPS o EPS", detalle: "La institución que te atendió normalmente radica el cobro por ti. Pide constancia." },
+  { titulo: "3. Haz seguimiento", detalle: "Guarda el número de radicado y consulta el estado en el canal oficial de ADRES." },
+];
+
 export default function TramitesPage() {
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-2">Trámites e indemnizaciones</h1>
-      <p className="text-slate-600 mb-6 max-w-2xl">
-        La Administradora de los Recursos del Sistema General de Seguridad
-        Social en Salud (ADRES) activó rutas de indemnización para las
-        víctimas del sismo.
-      </p>
-
-      <div className="rounded-xl border border-emerald-300 bg-emerald-50 p-6 mb-6">
-        <h2 className="font-semibold text-emerald-900 mb-2">ADRES sí cubre</h2>
-        <ul className="list-disc list-inside space-y-1 text-emerald-900">
-          <li>Gastos médicos y quirúrgicos: cirugías, hospitalización y rehabilitación.</li>
-          <li>Gastos funerarios: indemnización para familias de víctimas mortales.</li>
-          <li>Indemnización por incapacidad permanente, previa certificación técnica.</li>
-          <li>Traslado de pacientes: reconocimiento de costos de transporte asistencial.</li>
-        </ul>
-      </div>
-
-      <div className="rounded-xl border border-red-300 bg-red-50 p-6">
-        <h2 className="font-semibold text-red-900 mb-2">ADRES NO cubre</h2>
-        <p className="text-red-900">
-          Daños materiales ni afectaciones a la infraestructura física
-          (vivienda, negocio, vehículo). Para esos casos consulta los
-          programas de reconstrucción de la Alcaldía y el Gobierno Nacional.
+    <main className="contenedor">
+      <div className="seccion">
+        <h1>Trámites e indemnizaciones</h1>
+        <p className="sub">
+          La Administradora de los Recursos del Sistema General de Seguridad Social en Salud (ADRES) cubre gastos
+          derivados de la atención a víctimas de eventos catastróficos. No cubre daños materiales.
         </p>
+        <div className="rejilla-2" style={{ gridTemplateColumns: "1fr 1fr", marginTop: 14 }}>
+          <div style={{ borderTop: "4px solid var(--operativo)", background: "var(--fondo-2)", padding: 12 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "var(--operativo)" }}>Sí cubre</div>
+            <ul style={{ margin: "6px 0 0", paddingLeft: 18, fontSize: 15 }}>
+              {CUBRE.map((c) => <li key={c}>{c}</li>)}
+            </ul>
+          </div>
+          <div style={{ borderTop: "4px solid var(--critico)", background: "var(--fondo-2)", padding: 12 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "var(--critico)" }}>No cubre</div>
+            <ul style={{ margin: "6px 0 0", paddingLeft: 18, fontSize: 15 }}>
+              {NO_CUBRE.map((c) => <li key={c}>{c}</li>)}
+            </ul>
+          </div>
+        </div>
       </div>
 
-      <p className="text-sm text-slate-500 mt-6">
-        Consulta siempre el canal oficial de ADRES para el procedimiento y
-        los documentos exactos requeridos, ya que pueden variar.
-      </p>
-    </div>
+      <section className="seccion">
+        <h2 className="rotulo">Cómo reclamar</h2>
+        <div style={{ borderLeft: "3px solid var(--tinta)", paddingLeft: 14, display: "flex", flexDirection: "column", gap: 12 }}>
+          {PASOS.map((p) => (
+            <div key={p.titulo}>
+              <div style={{ fontSize: 16, fontWeight: 700 }}>{p.titulo}</div>
+              <div style={{ fontSize: 15 }}>{p.detalle}</div>
+            </div>
+          ))}
+        </div>
+        <p>
+          <a href="https://www.adres.gov.co" rel="noopener noreferrer" target="_blank" style={{ fontWeight: 600 }}>
+            Ir al canal oficial de ADRES →
+          </a>
+        </p>
+        <p className="nota">Esta guía es informativa. La entidad competente es la única que define la cobertura de cada caso.</p>
+      </section>
+    </main>
   );
 }

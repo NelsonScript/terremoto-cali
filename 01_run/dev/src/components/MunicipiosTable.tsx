@@ -20,34 +20,33 @@ export default function MunicipiosTable({ municipios }: { municipios: Municipio[
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Buscar municipio…"
-          className="w-full sm:w-64 rounded-md border border-slate-300 px-3 py-2 text-sm mb-3"
+          className="campo"
+          style={{ maxWidth: 320, marginBottom: 10 }}
         />
       )}
-      <div className="overflow-x-auto rounded-lg border border-slate-200">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-100 text-left">
-            <tr>
-              <th className="px-4 py-2">Municipio</th>
-              <th className="px-4 py-2">Situación reportada</th>
+      <table>
+        <thead>
+          <tr>
+            <th>Municipio</th>
+            <th>Situación reportada</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filtrados.map((m) => (
+            <tr key={m.nombre}>
+              <td style={{ fontWeight: 600, whiteSpace: "nowrap" }}>{m.nombre}</td>
+              <td style={{ fontSize: 15, color: "var(--tinta-3)" }}>{m.nota}</td>
             </tr>
-          </thead>
-          <tbody>
-            {filtrados.map((m) => (
-              <tr key={m.nombre} className="border-t border-slate-200">
-                <td className="px-4 py-2 font-medium whitespace-nowrap">{m.nombre}</td>
-                <td className="px-4 py-2 text-slate-600">{m.nota}</td>
-              </tr>
-            ))}
-            {filtrados.length === 0 && (
-              <tr>
-                <td colSpan={2} className="px-4 py-4 text-center text-slate-400">
-                  Sin resultados para &quot;{query}&quot;.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+          ))}
+          {filtrados.length === 0 && (
+            <tr>
+              <td colSpan={2} className="nota" style={{ textAlign: "center", padding: "16px 0" }}>
+                Sin resultados para &quot;{query}&quot;.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
   );
 }

@@ -1,95 +1,120 @@
 import Link from "next/link";
-import AlertBanner from "@/components/AlertBanner";
-import DepartamentosTable from "@/components/DepartamentosTable";
-import SourceNote from "@/components/SourceNote";
-import { meta, departamentosPrioritarios, departamentosSecundarios, formatNumero } from "@/lib/data";
-
-const ACCIONES = [
-  { href: "/donar", titulo: "Donar", desc: "Qué se necesita por departamento y cómo evitar estafas.", icon: "🤝" },
-  { href: "/albergues", titulo: "Albergues", desc: "Directorio de albergues y puntos de acopio.", icon: "🏠" },
-  { href: "/reportar", titulo: "Reportar", desc: "Persona atrapada, edificio en riesgo o necesidad médica.", icon: "📣" },
-  { href: "/lineas-de-emergencia", titulo: "Emergencia", desc: "119 Bomberos · 123 Policía · 106 Salud mental.", icon: "☎" },
-];
+import BannerAlerta from "@/components/AlertBanner";
+import LineaEmergenciaCard from "@/components/LineaEmergenciaCard";
+import { meta, departamentosPrioritarios, departamentosSecundarios, getEstadoDepartamento, formatNumero, lineas, hospitales } from "@/lib/data";
+import EstadoBadge from "@/components/EstadoBadge";
 
 export default function Home() {
-  const { nacional } = meta;
+  const todos = [...departamentosPrioritarios, ...departamentosSecundarios];
+
+  const resumenHospitalario = hospitales.resumen_por_ciudad.reduce(
+    (acc, r) => ({
+      evacuadas: acc.evacuadas + r.dano_grave_evacuadas,
+      enEvaluacion: acc.enEvaluacion + r.en_evaluacion_saturadas,
+      total: acc.total + r.total,
+    }),
+    { evacuadas: 0, enEvaluacion: 0, total: 0 }
+  );
+
+  const necesidadesUrgentes = Array.from(
+    new Set(departamentosPrioritarios.flatMap((d) => d.necesidades))
+  ).slice(0, 8);
+
+  const bomberos = lineas.find((l) => l.numero === "119");
+  const policia = lineas.find((l) => l.numero === "123");
 
   return (
-    <div>
-      <AlertBanner />
+    <main className="contenedor">
+      <div className="rejilla-principal seccion">
+        <div>
+          <h2 className="rotulo">Situación por departamento</h2>
+          <table>
+            <caption className="nota" style={{ captionSide: "bottom", textAlign: "left", paddingTop: 8 }}>
+              Fuente: {meta.nacional.fallecidos_gobernaciones.fuente} y Asocapitales. «—» = sin dato confirmado por
+              fuente oficial. <Link href="/fuentes">Metodología y fuentes</Link>
+            </caption>
+            <thead>
+              <tr>
+                <th>Departamento</th>
+                <th style={{ textAlign: "right" }}>Fallecidos</th>
+                <th style={{ textAlign: "right" }}>Heridos</th>
+                <th style={{ textAlign: "right" }}>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {todos.map((d) => {
+                const fallecidos = d.cifras_capital?.fallecidos ?? d.cifras_departamento_ungrd.fallecidos;
+                const heridos = d.cifras_capital?.heridos ?? d.cifras_departamento_ungrd.heridos;
+                const estado = getEstadoDepartamento(d);
+                return (
+                  <tr key={d.id}>
+                    <td>
+                      <Link href={`/departamentos/${d.id}`} style={{ fontWeight: 700, fontSize: 17, textDecoration: "none" }}>
+                        {d.nombre}
+                      </Link>
+                      <div className="nota">{d.resumen}</div>
+                    </td>
+                    <td className="cifra" style={{ textAlign: "right", fontSize: 24, fontWeight: 700, color: fallecidos != null ? undefined : "var(--gris)" }}>
+                      {formatNumero(fallecidos)}
+                    </td>
+                    <td className="cifra" style={{ textAlign: "right", fontSize: 24, fontWeight: 700, color: heridos != null ? undefined : "var(--gris)" }}>
+                      {formatNumero(heridos)}
+                    </td>
+                    <td style={{ textAlign: "right" }}>
+                      <EstadoBadge estado={estado} />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
 
-      <section className="max-w-5xl mx-auto px-4 pt-8 pb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-          {meta.evento}
-        </h1>
-        <p className="text-slate-600 mt-2 max-w-2xl">
-          Epicentro en {meta.epicentro} (profundidad {meta.profundidad_km} km),{" "}
-          {meta.hora_evento} {meta.declaratoria} en Colombia. Esta página
-          centraliza información verificada y herramientas para agilizar la
-          ayuda en el {meta.region}: Valle del Cauca, Risaralda, Chocó,
-          Caldas y departamentos vecinos.
-        </p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6">
-          <div className="rounded-lg border border-red-300 bg-red-50 px-4 py-3">
-            <div className="text-2xl sm:text-3xl font-bold tabular-nums text-red-900">
-              {formatNumero(nacional.fallecidos_confirmados_urbano.valor)}
+          <h2 className="rotulo" style={{ marginTop: 24 }}>Red hospitalaria</h2>
+          <div className="rejilla-2" style={{ gridTemplateColumns: "repeat(3,1fr)" }}>
+            <div style={{ borderLeft: "6px solid var(--critico)", background: "var(--fondo-2)", padding: "12px 14px" }}>
+              <div className="cifra" style={{ fontSize: 34, fontWeight: 700, lineHeight: 1 }}>{resumenHospitalario.evacuadas}</div>
+              <div style={{ fontSize: 15, fontWeight: 600, marginTop: 4 }}>Evacuadas o con daño grave</div>
             </div>
-            <div className="text-xs sm:text-sm mt-1 text-red-900">{nacional.fallecidos_confirmados_urbano.etiqueta}</div>
-          </div>
-          <div className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3">
-            <div className="text-2xl sm:text-3xl font-bold tabular-nums text-amber-900">
-              {formatNumero(nacional.fallecidos_gobernaciones.valor)}
+            <div style={{ borderLeft: "6px solid var(--evaluacion)", background: "var(--fondo-2)", padding: "12px 14px" }}>
+              <div className="cifra" style={{ fontSize: 34, fontWeight: 700, lineHeight: 1 }}>{resumenHospitalario.enEvaluacion}</div>
+              <div style={{ fontSize: 15, fontWeight: 600, marginTop: 4 }}>En evaluación o saturadas</div>
             </div>
-            <div className="text-xs sm:text-sm mt-1 text-amber-900">{nacional.fallecidos_gobernaciones.etiqueta}</div>
-          </div>
-          <div className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-3">
-            <div className="text-2xl sm:text-3xl font-bold tabular-nums text-slate-900">
-              {formatNumero(nacional.heridos.valor)}
+            <div style={{ borderLeft: "6px solid var(--tinta)", background: "var(--fondo-2)", padding: "12px 14px" }}>
+              <div className="cifra" style={{ fontSize: 34, fontWeight: 700, lineHeight: 1 }}>{resumenHospitalario.total}</div>
+              <div style={{ fontSize: 15, fontWeight: 600, marginTop: 4 }}>Total afectadas o en evaluación</div>
             </div>
-            <div className="text-xs sm:text-sm mt-1 text-slate-700">{nacional.heridos.etiqueta}</div>
           </div>
+          <p className="nota">
+            {hospitales.fuente}, corte {new Date(hospitales.corte).toLocaleDateString("es-CO")}.{" "}
+            <Link href="/salud">Ver tabla por institución</Link>
+          </p>
         </div>
-        <p className="text-xs text-slate-500 mt-2 max-w-2xl">
-          Dos cifras de fallecidos porque dos fuentes miden distinto: Asocapitales
-          confirma solo lo verificado en ciudades capitales; las gobernaciones
-          (vía UNGRD) ya incluyen zonas rurales aún en evaluación, por eso es
-          más alta y sigue subiendo.
-        </p>
-        <SourceNote fuente={nacional.fallecidos_gobernaciones.fuente} corte={nacional.fallecidos_gobernaciones.corte} />
-      </section>
 
-      <section className="max-w-5xl mx-auto px-4 py-6">
-        <h2 className="text-lg font-semibold mb-3">¿Qué necesitas hacer ahora?</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {ACCIONES.map((a) => (
-            <Link
-              key={a.href}
-              href={a.href}
-              className="rounded-xl border border-slate-200 p-4 hover:border-red-400 hover:shadow-sm transition-colors"
-            >
-              <div className="text-2xl">{a.icon}</div>
-              <div className="font-semibold mt-2">{a.titulo}</div>
-              <div className="text-sm text-slate-600 mt-1">{a.desc}</div>
+        <aside>
+          <BannerAlerta nivel="critico" titulo="Cuidado con las estafas">
+            Toda ayuda en dinero se canaliza <strong>únicamente</strong> por la Cruz Roja Colombiana. Ninguna otra
+            cuenta está autorizada.{" "}
+            <Link href="/donar" style={{ color: "#fff" }}>
+              Cómo verificar antes de transferir
             </Link>
-          ))}
-        </div>
-      </section>
+          </BannerAlerta>
 
-      <section className="max-w-5xl mx-auto px-4 py-6">
-        <div className="flex items-baseline justify-between gap-2 mb-3">
-          <h2 className="text-lg font-semibold">Departamentos afectados</h2>
-          <Link href="/departamentos" className="text-sm text-red-700 hover:underline shrink-0">
-            Ver todos →
-          </Link>
-        </div>
-        <p className="text-sm text-slate-600 mb-3">
-          Valle del Cauca, Risaralda, Chocó y Caldas tienen diagnóstico detallado
-          por municipio. Quindío, Antioquia y Tolima reportan afectación menor,
-          con cifras agregadas de UNGRD.
-        </p>
-        <DepartamentosTable departamentos={[...departamentosPrioritarios, ...departamentosSecundarios]} />
-      </section>
-    </div>
+          <h2 className="rotulo" style={{ marginTop: 20 }}>Necesidades más urgentes hoy</h2>
+          <div className="fila-chips">
+            {necesidadesUrgentes.map((n) => (
+              <span key={n} style={{ border: "1px solid var(--tinta)", padding: "8px 12px", fontSize: 15, fontWeight: 600 }}>
+                {n}
+              </span>
+            ))}
+          </div>
+
+          <h2 className="rotulo" style={{ marginTop: 20 }}>Líneas de emergencia</h2>
+          <div className="pila">
+            {bomberos && <LineaEmergenciaCard nombre="Bomberos" descripcion="Rescate y colapsos" numero={bomberos.numero} nivel="critico" />}
+            {policia && <LineaEmergenciaCard nombre="Policía" descripcion="Emergencias generales" numero={policia.numero} nivel="neutro" />}
+          </div>
+        </aside>
+      </div>
+    </main>
   );
 }

@@ -1,3 +1,11 @@
+const BORDE: Record<string, string> = {
+  critical: "var(--critico)",
+  warning: "var(--evaluacion)",
+  ok: "var(--operativo)",
+  neutral: "var(--tinta)",
+};
+
+/** Puerto fiel de TarjetaCifra.js (referencia de diseño). */
 export default function StatCard({
   label,
   value,
@@ -7,19 +15,23 @@ export default function StatCard({
   value: string | number | null;
   tone?: "critical" | "warning" | "ok" | "neutral";
 }) {
-  const toneClasses: Record<string, string> = {
-    critical: "bg-red-50 border-red-300 text-red-900",
-    warning: "bg-amber-50 border-amber-300 text-amber-900",
-    ok: "bg-emerald-50 border-emerald-300 text-emerald-900",
-    neutral: "bg-slate-50 border-slate-300 text-slate-900",
-  };
-
+  const sinDato = value === null || value === undefined;
   return (
-    <div className={`rounded-lg border px-4 py-3 ${toneClasses[tone]}`}>
-      <div className="text-2xl sm:text-3xl font-bold tabular-nums">
-        {value ?? "—"}
+    <div
+      style={{
+        background: "var(--fondo-2)",
+        borderLeft: "5px solid " + (sinDato ? "#9A998F" : BORDE[tone]),
+        padding: "10px 12px",
+      }}
+    >
+      <div
+        className="cifra"
+        style={{ fontSize: 32, fontWeight: 700, lineHeight: 1, color: sinDato ? "var(--gris)" : "var(--tinta)" }}
+      >
+        {sinDato ? "—" : typeof value === "number" ? value.toLocaleString("es-CO") : value}
       </div>
-      <div className="text-xs sm:text-sm mt-1">{label}</div>
+      <div style={{ fontSize: 14, fontWeight: 600, marginTop: 3 }}>{label}</div>
+      <div style={{ fontSize: 11, color: "var(--gris)" }}>{sinDato ? "Sin dato confirmado" : ""}</div>
     </div>
   );
 }

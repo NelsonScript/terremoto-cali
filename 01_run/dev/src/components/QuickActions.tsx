@@ -1,30 +1,29 @@
-import Link from "next/link";
+"use client";
 
-const ACTIONS = [
-  { href: "/donar", label: "Donar", icon: "🤝" },
-  { href: "/albergues", label: "Albergues", icon: "🏠" },
-  { href: "/reportar", label: "Reportar", icon: "📣" },
-  { href: "/lineas-de-emergencia", label: "Emergencia", icon: "☎" },
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const ACCIONES = [
+  { href: "/donar", texto: "Donar" },
+  { href: "/albergues", texto: "Albergues" },
+  { href: "/reportar", texto: "Reportar" },
 ];
 
+/** Puerto fiel de BarraAcciones.js (referencia de diseño). Oculta en
+ * escritorio vía la regla `.barra-acciones{display:none}` en globals.css. */
 export default function QuickActions() {
+  const activa = usePathname();
   return (
-    <>
-      {/* Barra fija inferior en móvil: las 4 acciones más urgentes a 1 tap */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-slate-200 grid grid-cols-4">
-        {ACTIONS.map((a) => (
-          <Link
-            key={a.href}
-            href={a.href}
-            className="flex flex-col items-center justify-center py-2 text-xs text-slate-700 active:bg-slate-100"
-          >
-            <span className="text-lg leading-none">{a.icon}</span>
-            {a.label}
-          </Link>
-        ))}
-      </nav>
-      {/* Espaciador para que el contenido no quede oculto tras la barra fija */}
-      <div className="md:hidden h-14" aria-hidden />
-    </>
+    <nav className="barra-acciones" aria-label="Acciones críticas">
+      {ACCIONES.map((a) => (
+        <Link key={a.href} href={a.href} className={activa === a.href ? "activa" : undefined}>
+          {a.texto}
+        </Link>
+      ))}
+      <Link href="/lineas-de-emergencia" className="llamar">
+        Llamar
+        <small>119 · 123</small>
+      </Link>
+    </nav>
   );
 }

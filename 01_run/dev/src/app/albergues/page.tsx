@@ -1,45 +1,53 @@
+import Link from "next/link";
 import type { Metadata } from "next";
-import { getAlberguesYAcopio } from "@/lib/data";
+import { getAlberguesYAcopio, departamentosPrioritarios } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Albergues y puntos de acopio",
+};
+
+const BORDE: Record<string, string> = {
+  "Albergue temporal": "var(--operativo)",
+  "Punto de acopio": "var(--tinta)",
 };
 
 export default function AlberguesPage() {
   const items = getAlberguesYAcopio();
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-2">Albergues y puntos de acopio</h1>
-      <p className="text-slate-600 mb-6 max-w-2xl">
-        Directorio de sitios habilitados para alojar a familias damnificadas
-        y recibir donaciones. Se irá ampliando por departamento a medida que
-        se habiliten nuevos puntos.
-      </p>
+    <main className="contenedor">
+      <div className="seccion">
+        <h1>Albergues y puntos de acopio</h1>
+        <p className="sub">
+          Directorio de sitios habilitados para alojar a familias damnificadas y recibir donaciones. Se irá
+          ampliando por departamento a medida que se habiliten nuevos puntos.
+        </p>
+        <nav className="fila-chips" style={{ marginTop: 12 }} aria-label="Ir a un departamento">
+          {departamentosPrioritarios.map((d) => (
+            <Link key={d.id} href={`/departamentos/${d.id}`} style={{ border: "1px solid var(--linea-2)", padding: "8px 12px", fontSize: 15, textDecoration: "none" }}>
+              {d.nombre}
+            </Link>
+          ))}
+        </nav>
+      </div>
 
-      {items.length === 0 ? (
-        <p className="text-slate-500">Aún no hay puntos registrados.</p>
-      ) : (
-        <div className="grid sm:grid-cols-2 gap-4">
-          {items.map((a) => (
-            <div key={`${a.tipo}-${a.nombre}`} className="rounded-lg border border-slate-200 p-4">
-              <div className="flex items-start justify-between gap-2">
-                <span className="font-medium">{a.nombre}</span>
-                <span
-                  className={`text-xs px-2 py-0.5 rounded-full shrink-0 ${
-                    a.tipo === "Albergue temporal"
-                      ? "bg-emerald-100 text-emerald-800"
-                      : "bg-sky-100 text-sky-800"
-                  }`}
-                >
-                  {a.tipo}
+      <section className="seccion pila">
+        {items.length === 0 ? (
+          <p className="sub">Aún no hay puntos registrados.</p>
+        ) : (
+          items.map((a) => (
+            <article key={`${a.tipo}-${a.nombre}`} style={{ border: "1px solid var(--linea-2)", borderTop: `4px solid ${BORDE[a.tipo]}`, padding: 14 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "flex-start" }}>
+                <h2>{a.nombre}</h2>
+                <span className={`etiqueta ${a.tipo === "Albergue temporal" ? "operativo" : "sin-dato"}`}>
+                  {a.tipo === "Albergue temporal" ? "ALBERGUE" : "ACOPIO"}
                 </span>
               </div>
-              <div className="text-xs text-slate-500 mt-1">{a.departamento}</div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+              <div style={{ fontSize: 15, marginTop: 4 }}>{a.departamento}</div>
+            </article>
+          ))
+        )}
+      </section>
+    </main>
   );
 }

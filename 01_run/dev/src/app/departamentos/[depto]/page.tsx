@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import StatCard from "@/components/StatCard";
 import SourceNote from "@/components/SourceNote";
 import MunicipiosTable from "@/components/MunicipiosTable";
+import DepartamentoSelector from "@/components/DepartamentoSelector";
 import { departamentos, getDepartamento } from "@/lib/data";
 
 export async function generateStaticParams() {
@@ -27,19 +28,19 @@ export default async function DepartamentoPage({ params }: PageProps<"/departame
   const ung = depto.cifras_departamento_ungrd;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <p className="text-sm text-slate-500 mb-2">
-        <Link href="/departamentos" className="hover:underline">Departamentos</Link> / {depto.nombre}
-      </p>
-      <h1 className="text-2xl font-bold">{depto.nombre} <span className="text-slate-400 font-normal text-lg">· capital {depto.capital}</span></h1>
-      <p className="text-slate-600 mt-2 max-w-2xl">{depto.resumen}</p>
+    <main className="contenedor">
+      <div className="seccion">
+        <h1>{depto.nombre}</h1>
+        <p className="sub">Capital: {depto.capital} · {depto.resumen}</p>
+        <div style={{ marginTop: 10 }}>
+          <DepartamentoSelector departamentos={departamentos} activo={depto.id} />
+        </div>
+      </div>
 
       {cap && (
-        <div className="mt-6">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500 mb-2">
-            {cap.nombre} (capital)
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <section className="seccion">
+          <h2 className="rotulo">{cap.nombre} (capital)</h2>
+          <div className="rejilla-2">
             {cap.fallecidos != null && <StatCard label="Fallecidos" value={cap.fallecidos} tone="critical" />}
             {cap.heridos != null && <StatCard label="Heridos" value={cap.heridos} tone="warning" />}
             {cap.desaparecidos != null && <StatCard label="Desaparecidos" value={cap.desaparecidos} tone="critical" />}
@@ -49,85 +50,90 @@ export default async function DepartamentoPage({ params }: PageProps<"/departame
             {cap.viviendas_averiadas != null && <StatCard label="Viviendas averiadas" value={cap.viviendas_averiadas} tone="warning" />}
             {cap.damnificados != null && <StatCard label="Damnificados" value={cap.damnificados} tone="warning" />}
           </div>
-          {cap.nota && <p className="text-xs text-slate-500 mt-2">{cap.nota}</p>}
+          {cap.nota && <p className="nota" style={{ marginTop: 8 }}>{cap.nota}</p>}
           <SourceNote fuente={cap.fuente} corte={cap.corte} />
-        </div>
+        </section>
       )}
 
-      <div className="mt-8">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500 mb-2">
-          Departamento (UNGRD)
-        </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <section className="seccion">
+        <h2 className="rotulo">Departamento (UNGRD)</h2>
+        <div className="rejilla-2">
           <StatCard label="Fallecidos" value={ung.fallecidos} tone={ung.fallecidos > 0 ? "critical" : "ok"} />
           <StatCard label="Heridos" value={ung.heridos} tone="warning" />
           <StatCard label="Viviendas averiadas" value={ung.viviendas_averiadas} tone="warning" />
           <StatCard label="Viviendas destruidas" value={ung.viviendas_destruidas} tone="critical" />
         </div>
         {ung.nota_ambiguedad && (
-          <div className="mt-3 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
+          <div style={{ marginTop: 10, borderLeft: "5px solid var(--evaluacion)", background: "var(--evaluacion-suave)", padding: 12, fontSize: 15 }}>
             <strong>Nota sobre esta cifra:</strong> {ung.nota_ambiguedad}
           </div>
         )}
         <SourceNote fuente={ung.fuente} corte={ung.corte} />
-      </div>
+      </section>
 
       {depto.situacion.length > 0 && (
-        <section className="mt-8">
-          <h2 className="text-lg font-semibold mb-3">Situación actual</h2>
-          <ul className="list-disc list-inside space-y-1.5 text-slate-700">
+        <section className="seccion">
+          <h2 className="rotulo">Situación actual</h2>
+          <ul style={{ fontSize: 15, paddingLeft: 18, margin: 0 }}>
             {depto.situacion.map((item, i) => (
-              <li key={i}>{item}</li>
+              <li key={i} style={{ marginBottom: 4 }}>{item}</li>
             ))}
           </ul>
         </section>
       )}
 
       {depto.necesidades.length > 0 && (
-        <section className="mt-8 rounded-xl border border-amber-300 bg-amber-50 p-5">
-          <h2 className="text-lg font-semibold mb-3 text-amber-900">Qué se necesita ahora en {depto.nombre}</h2>
-          <ul className="list-disc list-inside space-y-1 text-amber-900">
-            {depto.necesidades.map((item, i) => (
-              <li key={i}>{item}</li>
+        <section className="seccion">
+          <h2 className="rotulo">Qué necesita {depto.nombre} ahora</h2>
+          <div className="pila">
+            {depto.necesidades.map((n) => (
+              <div key={n} style={{ display: "flex", gap: 10, alignItems: "center", border: "1px solid var(--tinta)", padding: "10px 12px" }}>
+                <span style={{ width: 10, height: 10, background: "var(--critico)", flex: "none" }} />
+                <span style={{ fontSize: 16, fontWeight: 600 }}>{n}</span>
+              </div>
             ))}
-          </ul>
-          <Link href="/donar" className="inline-block mt-4 text-sm font-medium text-red-700 hover:underline">
-            Ver guía completa de donación →
-          </Link>
+          </div>
+          <p style={{ marginTop: 8 }}>
+            <Link href="/donar" style={{ fontWeight: 600 }}>Ver guía completa de donación →</Link>
+          </p>
         </section>
       )}
 
-      <section className="mt-8">
-        <h2 className="text-lg font-semibold mb-3">Municipios</h2>
+      <section className="seccion">
+        <h2 className="rotulo">Municipios</h2>
         {depto.municipios.length > 0 ? (
           <MunicipiosTable municipios={depto.municipios} />
         ) : (
-          <p className="text-slate-500">
-            {depto.nota_cobertura ?? "Sin desglose por municipio disponible aún."}
-          </p>
+          <p className="sub">{depto.nota_cobertura ?? "Sin desglose por municipio disponible aún."}</p>
         )}
       </section>
 
       {(depto.puntos_acopio.length > 0 || depto.albergues.length > 0) && (
-        <section className="mt-8 grid sm:grid-cols-2 gap-6">
+        <section className="seccion" style={{ display: "grid", gap: 24 }}>
           {depto.puntos_acopio.length > 0 && (
             <div>
-              <h3 className="font-semibold mb-2">Puntos de acopio</h3>
-              <ul className="list-disc list-inside text-slate-700 space-y-1">
+              <h3 style={{ marginBottom: 8 }}>Puntos de acopio</h3>
+              <ul style={{ fontSize: 15, paddingLeft: 18, margin: 0 }}>
                 {depto.puntos_acopio.map((p, i) => <li key={i}>{p}</li>)}
               </ul>
             </div>
           )}
           {depto.albergues.length > 0 && (
             <div>
-              <h3 className="font-semibold mb-2">Albergues</h3>
-              <ul className="list-disc list-inside text-slate-700 space-y-1">
+              <h3 style={{ marginBottom: 8 }}>Albergues</h3>
+              <ul style={{ fontSize: 15, paddingLeft: 18, margin: 0 }}>
                 {depto.albergues.map((p, i) => <li key={i}>{p}</li>)}
               </ul>
             </div>
           )}
         </section>
       )}
-    </div>
+
+      <section className="seccion pila">
+        <Link className="boton" href="/salud">Red hospitalaria <span>→</span></Link>
+        <Link className="boton" href="/albergues">Albergues en {depto.nombre} <span>→</span></Link>
+        <Link className="boton donar" href="/donar">Donar para {depto.nombre} <span>→</span></Link>
+      </section>
+    </main>
   );
 }

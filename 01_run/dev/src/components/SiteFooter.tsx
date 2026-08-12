@@ -1,27 +1,25 @@
 import Link from "next/link";
-import { meta } from "@/lib/data";
-import { formatFecha } from "@/lib/data";
+import { fuentes } from "@/lib/data";
 
+/** Puerto fiel de PieSitio.js (referencia de diseño). */
 export default function SiteFooter() {
+  const nombresFuentes = fuentes.map((f) => f.nombre);
   return (
-    <footer className="border-t border-slate-200 bg-slate-50 mt-12">
-      <div className="max-w-5xl mx-auto px-4 py-8 text-sm text-slate-600 flex flex-col gap-3">
-        <p>
-          Este sitio centraliza información pública sobre la emergencia por el
-          sismo del 10 de agosto de 2026 ({meta.epicentro}) para agilizar la
-          respuesta humanitaria. No sustituye los canales oficiales de
-          emergencia.
-        </p>
-        <p>
-          Última actualización general: {formatFecha(meta.ultima_actualizacion)} ·{" "}
-          <Link href="/fuentes" className="underline hover:text-red-700">
-            Ver fuentes y metodología
-          </Link>
-        </p>
-        <p className="text-xs text-slate-400">
-          Proyecto sin fines de lucro, operado con herramientas gratuitas
-          (GitHub, GitHub Actions, Firebase Hosting, Cloudflare).
-        </p>
+    <footer className="pie">
+      <div className="contenedor">
+        <span>
+          Fuentes: {nombresFuentes.join(" · ")}.
+          <br />
+          Sitio de utilidad pública sin ánimo de lucro. No sustituye a las entidades oficiales.
+        </span>
+        <span style={{ display: "flex", gap: 18, flexWrap: "wrap" }}>
+          <Link href="/departamentos">Departamentos</Link>
+          <Link href="/salud">Salud</Link>
+          <Link href="/fuentes">Fuentes</Link>
+          <Link href="/voluntariado">Voluntariado</Link>
+          <Link href="/tramites">Trámites</Link>
+          <Link href="/apoyo-privado">Apoyo privado</Link>
+        </span>
       </div>
     </footer>
   );

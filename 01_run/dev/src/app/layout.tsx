@@ -14,17 +14,17 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0f172a",
+  themeColor: "#111312",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="es" className="h-full antialiased">
-      <body className="min-h-full flex flex-col bg-white text-slate-900">
+    <html lang="es">
+      <body>
         <SiteHeader />
-        <main className="flex-1">{children}</main>
+        <main>{children}</main>
         <SiteFooter />
         <QuickActions />
       </body>

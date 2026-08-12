@@ -8,7 +8,7 @@ export default function SourceNote({
   corte: string;
 }) {
   return (
-    <p className="text-xs text-slate-500 mt-2">
+    <p className="nota" style={{ marginTop: 8 }}>
       Fuente: {fuente} · Corte: {formatFecha(corte)}
     </p>
   );

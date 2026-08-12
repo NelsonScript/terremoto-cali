@@ -1,9 +1,28 @@
-export default function AlertBanner() {
+import type { ReactNode } from "react";
+
+const ESTILOS: Record<string, React.CSSProperties> = {
+  critico: { background: "var(--critico)", color: "#fff", border: "none" },
+  aviso: { background: "var(--evaluacion-suave)", color: "var(--tinta-2)", border: "2px solid var(--evaluacion)" },
+  resuelto: { background: "var(--fondo)", color: "var(--tinta-2)", borderLeft: "5px solid var(--operativo)" },
+};
+
+/** Puerto fiel de BannerAlerta.js (referencia de diseño). */
+export default function BannerAlerta({
+  nivel = "critico",
+  titulo,
+  children,
+}: {
+  nivel?: "critico" | "aviso" | "resuelto";
+  titulo?: string;
+  children: ReactNode;
+}) {
   return (
-    <div className="bg-red-50 border-y border-red-300 text-red-900 px-4 py-3 text-sm sm:text-base text-center font-medium">
-      ⚠ Toda ayuda económica canalízala <strong>únicamente a través de la Cruz
-      Roja Colombiana</strong>. No transfieras dinero a cuentas personales ni
-      colectas no verificadas.
+    <div
+      role={nivel === "critico" ? "alert" : undefined}
+      style={{ padding: 16, fontSize: 15, lineHeight: 1.5, ...ESTILOS[nivel] }}
+    >
+      {titulo && <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>{titulo}</div>}
+      {children}
     </div>
   );
 }
