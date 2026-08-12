@@ -1,7 +1,6 @@
-"use client";
-
 import { initializeApp, getApps, type FirebaseOptions } from "firebase/app";
 import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { getAnalytics, isSupported } from "firebase/analytics";
 
 // Configuración pública de Firebase (segura de exponer en el cliente).
 // Se definen como variables de entorno NEXT_PUBLIC_* para no hardcodear
@@ -13,20 +12,33 @@ const firebaseConfig: FirebaseOptions = {
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 export const isFirebaseConfigured = Boolean(
   firebaseConfig.apiKey && firebaseConfig.projectId
 );
 
-function getDb() {
+function getApp() {
   if (!isFirebaseConfigured) {
     throw new Error(
       "Firebase no está configurado. Define NEXT_PUBLIC_FIREBASE_* en .env.local (ver .env.example)."
     );
   }
-  const app = getApps()[0] ?? initializeApp(firebaseConfig);
+  return getApps()[0] ?? initializeApp(firebaseConfig);
+}
+
+function getDb() {
+  const app = getApp();
   return getFirestore(app);
+}
+
+if (typeof window !== "undefined" && isFirebaseConfigured) {
+  isSupported().then((supported) => {
+    if (supported) {
+      getAnalytics(getApp());
+    }
+  }).catch(() => {});
 }
 
 /**
