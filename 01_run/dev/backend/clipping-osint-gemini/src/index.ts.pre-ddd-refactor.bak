@@ -1,0 +1,380 @@
+/**
+ * clipping-osint-gemini
+ * ---------------------
+ * Cloud Function (2a gen, HTTP) para el sitio "Ayuda Suroccidente".
+ * Busca noticias recientes y veridicas sobre el terremoto del 10 de agosto
+ * de 2026 en el occidente de Colombia, las verifica con criterio OSINT y
+ * publica las que pasan el filtro como documentos nuevos en la coleccion
+ * `feed_noticias` de Firestore.
+ *
+ * Corre enteramente dentro de GCP (Cloud Functions -> Vertex AI -> Firestore,
+ * mismo proyecto), disparada por Cloud Scheduler. No depende de ningun
+ * servicio externo a Google ni de que un computador este encendido.
+ *
+ * La validacion de esquema usa una copia sincronizada del schema de zod que
+ * ya usa el frontend para leer `feed_noticias` (ver src/schemas/noticia-clip.schema.ts)
+ * — asi lo que este backend considera "valido para escribir" es exactamente
+ * lo que el frontend considera "valido para leer".
+ */
+
+import type { HttpFunction } from '@google-cloud/functions-framework';
+import * as functions from '@google-cloud/functions-framework';
+import { GoogleGenAI } from '@google/genai';
+import * as admin from 'firebase-admin';
+import { RawNoticiaClipSchema, type RawNoticiaClip } from './schemas/noticia-clip.schema';
+
+// ---------------------------------------------------------------------------
+// Configuracion
+// ---------------------------------------------------------------------------
+
+// IMPORTANTE: Cloud Functions Gen2 NO garantiza tener seteada
+// GOOGLE_CLOUD_PROJECT/GCLOUD_PROJECT en tiempo de ejecucion (comprobado: en
+// nuestro despliegue llegaba `undefined`, lo que hacia que el cliente de
+// Vertex AI le pegara a "projects/undefined" con un error 403 criptico en
+// vez de un error claro). Por eso seteamos GCP_PROJECT_ID explicitamente en
+// el deploy (--set-env-vars) y la usamos como fuente de verdad, con las
+// variables automaticas solo como respaldo.
+const PROJECT_ID = process.env.GCP_PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
+const LOCATION = process.env.VERTEX_LOCATION || 'us-central1';
+// gemini-2.5-pro es el modelo verificado al escribir este codigo. Si al
+// desplegar existe una generacion mas nueva en Vertex AI (ej. gemini-3.x),
+// revisa https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models
+// y actualiza esta variable de entorno en el despliegue.
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-pro';
+const COLLECTION = 'feed_noticias';
+const VENTANA_HORAS_DEFECTO = 6;
+
+if (!PROJECT_ID) {
+  // Falla rapido con un mensaje claro en vez de dejar que Vertex AI tire un
+  // 403 confuso sobre "projects/undefined" mas adelante.
+  throw new Error(
+    'Falta la variable de entorno GCP_PROJECT_ID (o GOOGLE_CLOUD_PROJECT/GCLOUD_PROJECT). ' +
+    'Verifica que el deploy incluya --set-env-vars=GCP_PROJECT_ID=terremoto-colombia-2026.'
+  );
+}
+
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
+const db = admin.firestore();
+
+const genAI = new GoogleGenAI({
+  vertexai: true,
+  project: PROJECT_ID,
+  location: LOCATION,
+});
+
+// ---------------------------------------------------------------------------
+// Allowlist de fuentes (identica a la que usaba el agente de clipping)
+// ---------------------------------------------------------------------------
+
+const ALLOWLIST_TEXTO = `
+MEDIOS (tipo: "medio"): El Tiempo (eltiempo.com), El Espectador (elespectador.com),
+El Pais Cali (elpais.com.co), Semana (semana.com), RCN Radio/Noticias (rcnradio.com,
+noticiasrcn.com), Caracol Radio/Noticias (caracol.com.co, noticiascaracol.com),
+Blu Radio (bluradio.com), W Radio (wradio.com.co), La FM (lafm.com.co),
+Infobae Colombia (infobae.com, seccion Colombia), y cobertura de Colombia de
+agencias internacionales (Reuters, AP, AFP).
+
+OFICIALES (tipo: "oficial"): UNGRD (gestiondelriesgo.gov.co), Presidencia de
+Colombia (presidencia.gov.co), Gobernacion del Valle del Cauca, Gobernacion de
+Risaralda, Gobernacion de Caldas, Gobernacion del Choco, Gobernacion del
+Quindio, Gobernacion de Antioquia, Gobernacion de Tolima, Alcaldia de Cali
+(cali.gov.co), Defensa Civil Colombiana, Bomberos (cuerpos oficiales),
+Servicio Geologico Colombiano - SGC (sgc.gov.co).
+
+ONGs (tipo: "ong"): Cruz Roja Colombiana (cruzrojacolombiana.org), OCHA
+Colombia / ReliefWeb (reliefweb.int), ACNUR Colombia (si reporta
+desplazamiento), Pastoral Social/Caritas Colombia, Medicos Sin Fronteras (si
+reportan sobre esta emergencia).
+
+EXPERTOS (tipo: "experto"): OSSO Corporacion (Univalle), SGC en su rol
+tecnico/cientifico, IDEAM (si hay componente climatico asociado),
+investigadores o centros academicos reconocidos (ej. Universidad del Valle,
+Universidad Tecnologica de Pereira) SOLO cuando publiquen analisis tecnico
+verificable con nombre/institucion clara.
+
+Se puede ampliar esta lista con criterio conservador (ej. un dominio .gov.co
+oficial no listado, u otro medio nacional de trayectoria reconocida) pero
+NUNCA con blogs, agregadores sin firma, o cuentas sin identidad institucional
+clara. Si una noticia solo aparece en un medio fuera de esta lista, descartala
+aunque parezca creible.
+`.trim();
+
+const DEPARTAMENTOS = [
+  'Valle del Cauca',
+  'Risaralda',
+  'Chocó',
+  'Caldas',
+  'Quindío',
+  'Antioquia',
+  'Tolima',
+] as const;
+
+type Departamento = (typeof DEPARTAMENTOS)[number];
+
+function esDepartamentoValido(d: string | null): d is Departamento | null {
+  return d === null || (DEPARTAMENTOS as readonly string[]).includes(d);
+}
+
+// ---------------------------------------------------------------------------
+// Paso 1: leer lo ultimo publicado (para deduplicar y fijar la ventana)
+// ---------------------------------------------------------------------------
+
+interface NoticiaExistente {
+  id: string;
+  titular?: string;
+  fechaPublicacion?: string;
+  fuente?: { url?: string; };
+}
+
+async function leerUltimasNoticias(): Promise<NoticiaExistente[]> {
+  const snap = await db.collection(COLLECTION).orderBy('fechaPublicacion', 'desc').limit(12).get();
+  return snap.docs.map((d) => ({ id: d.id, ...(d.data() as Record<string, unknown>) })) as NoticiaExistente[];
+}
+
+function calcularVentanaBusqueda(ultimasNoticias: NoticiaExistente[]): { desde: Date; horas: number; } {
+  const ahora = Date.now();
+  if (!ultimasNoticias.length || !ultimasNoticias[0].fechaPublicacion) {
+    return { desde: new Date(ahora - VENTANA_HORAS_DEFECTO * 3600 * 1000), horas: VENTANA_HORAS_DEFECTO };
+  }
+  const masReciente = new Date(ultimasNoticias[0].fechaPublicacion).getTime();
+  const horasDesdeUltima = (ahora - masReciente) / 3600 / 1000;
+  if (horasDesdeUltima < VENTANA_HORAS_DEFECTO) {
+    return { desde: new Date(masReciente), horas: Math.max(horasDesdeUltima, 0.5) };
+  }
+  return { desde: new Date(ahora - VENTANA_HORAS_DEFECTO * 3600 * 1000), horas: VENTANA_HORAS_DEFECTO };
+}
+
+// ---------------------------------------------------------------------------
+// Paso 2 y 3: prompt para Gemini (busqueda + verificacion OSINT en un solo
+// paso, apoyado en Grounding con Google Search)
+// ---------------------------------------------------------------------------
+
+function construirPrompt(params: { ultimasNoticias: NoticiaExistente[]; ventana: { desde: Date; horas: number; }; }): string {
+  const { ultimasNoticias, ventana } = params;
+  const ahoraISO = new Date().toISOString();
+  const contextoDedup = ultimasNoticias.length
+    ? ultimasNoticias
+      .map((n) => `- "${n.titular}" (${n.fechaPublicacion}, fuente: ${n.fuente?.url || 'desconocida'})`)
+      .join('\n')
+    : '(no hay noticias previas registradas)';
+
+  return `
+Eres el agente de clipping editorial/OSINT del sitio de ayuda "Ayuda Suroccidente"
+(terremoto del 10 de agosto de 2026 en el occidente de Colombia). Tu tarea:
+buscar noticias VERIDICAS Y RECIENTES sobre la emergencia usando la
+herramienta de busqueda de Google, verificarlas con criterio OSINT, y
+devolver SOLO las que pasan el filtro, en el formato JSON exacto que se pide
+al final.
+
+Fecha y hora actual: ${ahoraISO}
+Ventana de busqueda: cubre noticias publicadas desde aproximadamente
+${ventana.desde.toISOString()} hasta ahora (ultimas ~${ventana.horas.toFixed(1)} horas).
+Descarta cualquier resultado que no puedas confirmar que fue publicado dentro
+de esa ventana.
+
+## Noticias ya publicadas en el feed (NO dupliques estos hechos)
+${contextoDedup}
+
+## Fuentes permitidas (allowlist) — SOLO puedes usar estas
+${ALLOWLIST_TEXTO}
+
+## Cobertura minima a intentar
+Busca al menos sobre cada uno de estos 7 departamentos + la emergencia en
+general: ${DEPARTAMENTOS.join(', ')}.
+
+## Reglas de verificacion OSINT (obligatorias, antes de incluir cualquier noticia)
+1. Confirma que la fuente esta en la allowlist (por dominio real, no solo por
+   nombre — cuidado con sitios que imitan nombres de medios reales).
+2. Confirma la fecha/hora de publicacion REAL del articulo (no la fecha en
+   que lo encontraste).
+3. Busca si al menos otra fuente de la allowlist reporta el MISMO hecho de
+   forma independiente. Si si -> corroboracion.nivel = "multiple-fuentes" y
+   lista esa(s) fuente(s) en fuentesAdicionales. Si no -> "fuente-unica"
+   (se publica igual, pero marcada como menos confiable).
+4. Solo incluye en "cifras" numeros que el texto declare EXPLICITAMENTE
+   (nunca los infieras, sumes ni redondees).
+5. Si la noticia contradice o parece duplicar (con cifras distintas) algo que
+   ya esta en el feed o que sabes que dice el boletin oficial de UNGRD, NO
+   elijas una version como "la correcta" — describe la discrepancia en
+   notaAmbiguedad.
+6. Nunca copies el articulo completo ni un parrafo largo textual — "resumen"
+   va en tus propias palabras (2 a 4 frases, max 2000 caracteres). Si citas,
+   maximo una frase textual de menos de 15 palabras, entre comillas.
+7. Si ninguna noticia pasa el filtro, devuelve un array vacio. Esta bien no
+   encontrar nada — no inventes contenido de relleno.
+8. "noOficial" SIEMPRE debe ser true, incluso si la fuente es una
+   gobernacion — sigue siendo prensa/comunicado, no el boletin consolidado
+   de UNGRD.
+9. "departamento" debe ser exactamente uno de estos strings (o null si es
+   nacional/varios): ${DEPARTAMENTOS.join(', ')}.
+
+## Formato de salida (OBLIGATORIO)
+Responde UNICAMENTE con un array JSON valido (sin texto antes ni despues, sin
+bloque de codigo markdown), donde cada elemento tiene EXACTAMENTE esta forma:
+
+[
+  {
+    "titular": "string, max 300 caracteres",
+    "resumen": "string, tus propias palabras, max 2000 caracteres",
+    "categoria": "una de: fallecidos | heridos | albergues | infraestructura | ayuda-humanitaria | vias-comunicacion | salud | otro",
+    "departamento": "uno de: ${DEPARTAMENTOS.join(' | ')}, o null si es nacional/varios",
+    "municipio": "string o null",
+    "fechaPublicacion": "ISO 8601, fecha/hora real de publicacion de la fuente",
+    "fuente": { "nombre": "string", "url": "string, debe empezar con https://", "tipo": "medio | oficial | ong | experto" },
+    "corroboracion": { "nivel": "multiple-fuentes | fuente-unica", "fuentesAdicionales": [{ "nombre": "string", "url": "string" }] },
+    "cifras": [{ "etiqueta": "string", "valor": 0, "unidad": "string" }],
+    "noOficial": true,
+    "notaAmbiguedad": "string o null"
+  }
+]
+
+Si no hay ninguna noticia que pase el filtro, responde exactamente: []
+`.trim();
+}
+
+async function llamarGemini(prompt: string): Promise<string> {
+  const response = await genAI.models.generateContent({
+    model: GEMINI_MODEL,
+    contents: prompt,
+    config: {
+      tools: [{ googleSearch: {} }],
+      temperature: 0.2,
+    },
+  });
+  return response.text || '';
+}
+
+function extraerJSON(texto: string): unknown {
+  const limpio = texto
+    .trim()
+    .replace(/^```json\s*/i, '')
+    .replace(/^```\s*/i, '')
+    .replace(/```\s*$/i, '')
+    .trim();
+  try {
+    return JSON.parse(limpio);
+  } catch (e) {
+    const inicio = limpio.indexOf('[');
+    const fin = limpio.lastIndexOf(']');
+    if (inicio !== -1 && fin !== -1 && fin > inicio) {
+      return JSON.parse(limpio.slice(inicio, fin + 1));
+    }
+    throw new Error(`No se pudo parsear la respuesta de Gemini como JSON: ${(e as Error).message}`);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Deduplicacion
+// ---------------------------------------------------------------------------
+
+function normalizarTitular(t: string): string[] {
+  return t
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9\s]/g, '')
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function esDuplicado(candidata: RawNoticiaClip, existentes: Array<{ titular?: string; fuente?: { url?: string; }; }>): boolean {
+  const palabrasCandidata = new Set(normalizarTitular(candidata.titular));
+  for (const ex of existentes) {
+    if (ex.fuente?.url && candidata.fuente.url && ex.fuente.url === candidata.fuente.url) return true;
+    const palabrasEx = new Set(normalizarTitular(ex.titular || ''));
+    const interseccion = [...palabrasCandidata].filter((w) => palabrasEx.has(w)).length;
+    const union = new Set([...palabrasCandidata, ...palabrasEx]).size;
+    const jaccard = union ? interseccion / union : 0;
+    if (jaccard > 0.6) return true;
+  }
+  return false;
+}
+
+// ---------------------------------------------------------------------------
+// Paso 4: escribir en Firestore
+// ---------------------------------------------------------------------------
+
+async function escribirNoticias(noticias: RawNoticiaClip[]): Promise<Array<{ id: string; titular: string; }>> {
+  const creadas: Array<{ id: string; titular: string; }> = [];
+  for (const noticia of noticias) {
+    const ref = await db.collection(COLLECTION).add({
+      ...noticia,
+      fechaRecopilacion: new Date().toISOString(),
+      creadoPor: 'agente-clipping-osint-gemini-gcp',
+    });
+    creadas.push({ id: ref.id, titular: noticia.titular });
+  }
+  return creadas;
+}
+
+// ---------------------------------------------------------------------------
+// Handler HTTP (invocado por Cloud Scheduler)
+// ---------------------------------------------------------------------------
+
+interface Descartada {
+  titular: string;
+  motivos: string[];
+}
+
+const clippingOsint: HttpFunction = async (_req, res) => {
+  try {
+    const ultimasNoticias = await leerUltimasNoticias();
+    const ventana = calcularVentanaBusqueda(ultimasNoticias);
+
+    const prompt = construirPrompt({ ultimasNoticias, ventana });
+    const textoRespuesta = await llamarGemini(prompt);
+    const crudo = extraerJSON(textoRespuesta);
+
+    if (!Array.isArray(crudo)) {
+      throw new Error('La respuesta de Gemini no fue un array JSON.');
+    }
+
+    const validas: RawNoticiaClip[] = [];
+    const descartadas: Descartada[] = [];
+
+    for (const candidataCruda of crudo) {
+      const resultado = RawNoticiaClipSchema.safeParse(candidataCruda);
+      if (!resultado.success) {
+        const titular = typeof (candidataCruda as any)?.titular === 'string' ? (candidataCruda as any).titular : '(sin titular)';
+        descartadas.push({
+          titular,
+          motivos: resultado.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`),
+        });
+        continue;
+      }
+
+      const candidata = resultado.data;
+
+      if (!esDepartamentoValido(candidata.departamento)) {
+        descartadas.push({ titular: candidata.titular, motivos: [`departamento fuera de los 7 cubiertos: ${candidata.departamento}`] });
+        continue;
+      }
+
+      if (esDuplicado(candidata, ultimasNoticias) || esDuplicado(candidata, validas)) {
+        descartadas.push({ titular: candidata.titular, motivos: ['posible duplicado de una noticia ya publicada'] });
+        continue;
+      }
+
+      validas.push(candidata);
+    }
+
+    const creadas = validas.length ? await escribirNoticias(validas) : [];
+
+    const resumen = {
+      candidatas: crudo.length,
+      creadas: creadas.length,
+      descartadas: descartadas.length,
+      detalle_creadas: creadas,
+      detalle_descartadas: descartadas,
+    };
+    console.log(JSON.stringify(resumen));
+    res.status(200).json(resumen);
+  } catch (err) {
+    console.error('Error en clippingOsint:', err);
+    res.status(500).json({ error: err instanceof Error ? err.message : String(err) });
+  }
+};
+
+functions.http('clippingOsint', clippingOsint);

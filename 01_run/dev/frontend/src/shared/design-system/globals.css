@@ -1,0 +1,362 @@
+/*
+ * dev-ddd no usa Tailwind (proyecto Vite + React puro, sin el pipeline de
+ * Next.js). Este archivo es CSS plano — ninguna clase de las páginas
+ * portadas depende de utilidades de Tailwind, así que se retiró el
+ * @import original sin perder nada del sistema visual.
+ *
+ * Sistema visual portado 1:1 desde el diseño de referencia generado en
+ * Claude Design ("Ayuda Cali.dc.html", disponible en ~/Downloads/nextjs
+ * del usuario). Ver 02_emphatize/DISENO_WEB.md §5.1 para el brief que
+ * originó esta paleta ("utilitario de confianza institucional", gov.uk /
+ * Google Crisis Response). No introducir colores ni radios de esquina
+ * fuera de este sistema.
+ */
+:root {
+  --critico: #9e1616;
+  --critico-suave: #fdf0ee;
+  --evaluacion: #8a5200;
+  --evaluacion-suave: #fdf6e9;
+  --operativo: #0b6b3a;
+  --tinta: #111312;
+  --tinta-2: #20211f;
+  --tinta-3: #43443f;
+  --gris: #6b6b66;
+  --linea: #d8d7d2;
+  --linea-2: #cfcec9;
+  --fondo: #ffffff;
+  --fondo-2: #f4f3ef;
+  --enlace: #0b4f9e;
+  --enlace-hover: #083a76;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+a {
+  color: var(--enlace);
+}
+a:hover {
+  color: var(--enlace-hover);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th {
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #4a4a46;
+  padding: 8px 10px 8px 0;
+  border-bottom: 2px solid var(--tinta);
+}
+th:last-child {
+  padding-right: 0;
+}
+td {
+  padding: 11px 10px 11px 0;
+  border-bottom: 1px solid var(--linea);
+  vertical-align: top;
+}
+td:last-child {
+  padding-right: 0;
+}
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.contenedor {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+.barra-marca {
+  background: var(--tinta);
+  color: #fff;
+  padding: 10px 0;
+  font-size: 13px;
+}
+.barra-marca .contenedor {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.barra-marca a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+.barra-marca .ruta {
+  opacity: 0.75;
+}
+.tira-evento {
+  background: var(--critico);
+  color: #fff;
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.seccion {
+  padding: 16px 0;
+}
+.rotulo {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #4a4a46;
+  margin: 0 0 8px;
+}
+h1 {
+  font-size: 24px;
+  line-height: 1.2;
+  margin: 0;
+}
+h2 {
+  font-size: 19px;
+  line-height: 1.25;
+  margin: 0;
+}
+.sub {
+  font-size: 15px;
+  color: var(--tinta-3);
+  line-height: 1.45;
+  margin: 4px 0 0;
+}
+.nota {
+  font-size: 13px;
+  color: var(--gris);
+  line-height: 1.5;
+}
+.cifra {
+  font-variant-numeric: tabular-nums;
+}
+
+.rejilla-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.pila {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.fila-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.etiqueta {
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+}
+.etiqueta.critico {
+  background: var(--critico);
+}
+.etiqueta.evaluacion {
+  background: var(--evaluacion);
+}
+.etiqueta.operativo {
+  background: var(--operativo);
+}
+.etiqueta.sin-dato {
+  background: var(--gris);
+}
+
+.boton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 14px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--tinta);
+  border: 1px solid var(--tinta);
+  background: var(--fondo);
+}
+.boton.principal {
+  background: var(--tinta);
+  color: #fff;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  min-height: 56px;
+  border: none;
+  width: 100%;
+}
+.boton.donar {
+  background: var(--operativo);
+  color: #fff;
+  border: none;
+}
+.boton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.campo {
+  border: 1px solid var(--tinta);
+  padding: 14px;
+  font-size: 16px;
+  min-height: 48px;
+  width: 100%;
+  font-family: inherit;
+  background: #fff;
+  color: var(--tinta);
+  border-radius: 0;
+}
+textarea.campo {
+  min-height: 96px;
+  line-height: 1.45;
+}
+.etiqueta-campo {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 16px 0 6px;
+}
+.opcion {
+  border: 1px solid var(--linea-2);
+  padding: 14px;
+  font-size: 16px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  background: #fff;
+}
+.opcion.activa {
+  border: 2px solid var(--tinta);
+  background: var(--fondo-2);
+  font-weight: 600;
+}
+
+.pie {
+  background: var(--tinta);
+  color: #c9c9c4;
+  padding: 18px 0;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-top: 24px;
+}
+.pie a {
+  color: #fff;
+}
+.pie .contenedor {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.barra-acciones {
+  position: sticky;
+  bottom: 0;
+  background: var(--tinta);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 3px solid var(--critico);
+  z-index: 10;
+}
+.barra-acciones a {
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  padding: 14px 4px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  min-height: 60px;
+  border-left: 1px solid #3a3b38;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.barra-acciones a:first-child {
+  border-left: none;
+}
+.barra-acciones a.llamar {
+  background: var(--critico);
+  font-weight: 700;
+}
+.barra-acciones a.activa {
+  background: #2c2e2b;
+  font-weight: 700;
+}
+.barra-acciones a small {
+  display: block;
+  font-weight: 400;
+  font-size: 11px;
+}
+
+@media (min-width: 900px) {
+  h1 {
+    font-size: 30px;
+  }
+  .seccion {
+    padding: 24px 0;
+  }
+  .rejilla-2 {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .rejilla-principal {
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .barra-acciones {
+    display: none;
+  }
+  .nav-escritorio {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 899px) {
+  .nav-escritorio {
+    display: none;
+  }
+}
+.nav-escritorio a {
+  background: #2c2e2b;
+  color: #fff;
+  text-decoration: none;
+  padding: 12px 18px;
+  font-size: 15px;
+  font-weight: 700;
+}
+.nav-escritorio a.donar {
+  background: var(--operativo);
+}
+.nav-escritorio a.llamar {
+  background: var(--critico);
+}

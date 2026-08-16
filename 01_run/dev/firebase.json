@@ -1,9 +1,12 @@
 {
   "hosting": {
-    "public": "out",
+    "public": "frontend/dist",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "cleanUrls": false,
-    "trailingSlash": true
+    "trailingSlash": true,
+    "rewrites": [
+      { "source": "**", "destination": "/index.html" }
+    ]
   },
   "firestore": {
     "rules": "firestore.rules",

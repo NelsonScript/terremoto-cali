@@ -1,0 +1,25 @@
+{
+  "name": "clipping-osint-gemini",
+  "version": "1.0.0",
+  "description": "Cloud Function (2a gen) que busca, verifica (OSINT) y publica noticias sobre la emergencia del terremoto en feed_noticias (Firestore), usando Gemini via Vertex AI con Grounding con Google Search. Corre 100% dentro de GCP, disparada por Cloud Scheduler.",
+  "main": "dist/index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "gcp-build": "tsc -p tsconfig.json",
+    "start": "npm run build && functions-framework --target=clippingOsint --source=dist --port=8080",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.4.0",
+    "@google/genai": "^0.9.0",
+    "firebase-admin": "^12.6.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "@types/node": "^20.14.0"
+  }
+}

@@ -1,6 +1,0 @@
-[
-  { "nombre": "Cancha de Hockey Miguel Calero", "zona": "cali", "tipo": "Albergue temporal", "direccion": "Cali", "estado": "Activo" },
-  { "nombre": "Diamante de Béisbol", "zona": "cali", "tipo": "Albergue temporal", "direccion": "Cali", "estado": "Activo" },
-  { "nombre": "Escuela Nacional del Deporte", "zona": "cali", "tipo": "Albergue temporal", "direccion": "Cali", "estado": "Activo" },
-  { "nombre": "Plazoleta Jairo Varela", "zona": "cali", "tipo": "Punto de acopio", "direccion": "Frente al CAM, Cali", "estado": "Activo" }
-]

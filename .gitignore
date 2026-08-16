@@ -6,11 +6,14 @@
 .Spotlight-V100
 .Trashes
 
-# Node / Next.js
+# Node
 node_modules/
+dist/
+build/
+
+# Next.js (solo aplica a 01_run/dev__DEPRECATED, archivado — no se usa en el proyecto activo)
 .next/
 out/
-build/
 
 # Environment Variables
 .env

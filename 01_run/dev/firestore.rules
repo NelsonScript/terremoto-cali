@@ -1,11 +1,24 @@
 rules_version = '2';
 
-// Reglas de seguridad para el proyecto "Ayuda Cali".
-// Los formularios públicos (Reportar y Voluntariado) solo pueden CREAR
-// documentos; nadie puede leer, actualizar ni borrar desde el cliente.
-// El equipo coordinador consulta los datos desde la consola de Firebase
-// (autenticado como administrador del proyecto), fuera del alcance de
-// estas reglas de cliente.
+// Reglas de seguridad del proyecto "Ayuda Suroccidente" / terremoto-colombia-2026.
+//
+// - reportes / voluntariado: formularios públicos, SOLO creación — nadie lee,
+//   actualiza ni borra desde el cliente. El equipo coordinador consulta desde
+//   la consola de Firebase (autenticado como administrador), fuera del
+//   alcance de estas reglas.
+// - feed_noticias: a diferencia de los dos anteriores, SÍ es de lectura
+//   pública (es contenido que la propia web muestra a cualquier visitante).
+//   La escritura sigue el mismo principio de "solo creación validada por
+//   esquema" que reportes/voluntariado, pero aquí quien crea documentos no es
+//   un humano vía formulario sino el agente de clipping OSINT (una tarea
+//   programada en la nube que corre cada 4h — ver ARCHITECTURE_RULES.md
+//   §13). El límite de confianza es el mismo: no autenticación, solo
+//   validación de forma/tipo de cada campo. Cualquiera con la API key
+//   pública del proyecto (por diseño, no es secreta) podría en teoría crear
+//   documentos que cumplan el esquema — el mismo riesgo aceptado que ya
+//   existe para reportes/voluntariado; no hay protección anti-spam real
+//   (requeriría Firebase App Check o escritura server-side vía Cloud
+//   Function, fuera de alcance por ahora).
 service cloud.firestore {
   match /databases/{database}/documents {
 
@@ -19,8 +32,30 @@ service cloud.firestore {
       allow read, update, delete: if false;
     }
 
+    match /feed_noticias/{docId} {
+      allow read: if true;
+      allow create: if esNoticiaClipValida(request.resource.data);
+      allow update, delete: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
   }
+}
+
+function esNoticiaClipValida(datos) {
+  return datos.titular is string && datos.titular.size() > 0 && datos.titular.size() < 300
+    && datos.resumen is string && datos.resumen.size() > 0 && datos.resumen.size() < 2000
+    && datos.categoria in ['fallecidos', 'heridos', 'albergues', 'infraestructura',
+                            'ayuda-humanitaria', 'vias-comunicacion', 'salud', 'otro']
+    && datos.fechaPublicacion is string
+    && datos.fuente is map
+    && datos.fuente.nombre is string && datos.fuente.nombre.size() > 0
+    && datos.fuente.url is string && datos.fuente.url.matches('^https://.*')
+    && datos.fuente.tipo in ['medio', 'oficial', 'ong', 'experto']
+    && datos.corroboracion is map
+    && datos.corroboracion.nivel in ['multiple-fuentes', 'fuente-unica']
+    && datos.noOficial == true
+    && datos.creadoPor is string;
 }
